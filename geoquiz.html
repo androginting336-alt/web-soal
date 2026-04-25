@@ -51,11 +51,6 @@
             border-color: #ff85a1;
         }
 
-        .btn-cute-choice:active:not(:disabled) {
-            transform: translateY(4px);
-            border-bottom-width: 2px;
-        }
-
         .btn-cute-choice.correct {
             background: #e7ffed;
             border-color: #74c69d;
@@ -96,8 +91,6 @@
             position: fixed;
             width: 10px;
             height: 10px;
-            position: absolute;
-            top: -10px;
             z-index: 100;
             animation: fall 3s linear forwards;
         }
@@ -120,12 +113,12 @@
         .input-gemoy:focus { border-color: #ff4d6d; box-shadow: 0 0 15px #ffd1dc; }
 
         .celebration-text {
-            animation: popText 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate;
+            animation: popText 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate;
         }
 
         @keyframes popText {
             from { transform: scale(1); }
-            to { transform: scale(1.1); }
+            to { transform: scale(1.2); }
         }
     </style>
 </head>
@@ -133,29 +126,29 @@
 
     <div id="game-container" class="w-full max-w-xl">
         
-        <!-- Welcome Screen -->
+        <!-- Layar Selamat Datang -->
         <div id="welcome-screen" class="text-center py-10">
             <div class="text-9xl mb-6 bounce">🦖</div>
             <h1 class="text-5xl text-pink-500 font-black mb-6">Halo Geologist!</h1>
             <p class="text-xl text-pink-400 font-bold mb-8 italic">Ketik namamu dulu ya biar kiyut: 🎀</p>
             <input type="text" id="player-name" class="input-gemoy w-full text-2xl mb-8" placeholder="Nama Kamu...">
             <br>
-            <button onclick="checkName()" class="bg-pink-500 text-white text-2xl font-black px-12 py-5 rounded-full border-b-8 border-pink-700 hover:scale-105 active:translate-y-2 active:border-b-0 transition-all">
+            <button onclick="checkName()" class="bg-pink-500 text-white text-2xl font-black px-12 py-5 rounded-full border-b-8 border-pink-700 hover:scale-105 active:translate-y-2 active:border-b-0 transition-all shadow-lg">
                 GAS KAN! ✨
             </button>
         </div>
 
-        <!-- Start Screen -->
+        <!-- Layar Mulai -->
         <div id="start-screen" class="hidden text-center py-10">
             <div class="text-7xl mb-4">⛏️💖💎</div>
             <h1 class="text-4xl text-pink-500 font-black mb-4">Siap, <span id="display-name" class="text-slate-700"></span>?</h1>
             <p class="text-xl text-pink-400 font-bold mb-10">Bantu Kelompok 1 selesaikan misi ini!</p>
-            <button onclick="startGame()" class="bg-pink-400 text-white text-3xl font-black px-16 py-6 rounded-full border-b-8 border-pink-600 hover:scale-110 active:translate-y-2 transition-all">
+            <button onclick="startGame()" class="bg-pink-400 text-white text-3xl font-black px-16 py-6 rounded-full border-b-8 border-pink-600 hover:scale-110 active:translate-y-2 transition-all shadow-xl">
                 MULAI YUK! 🚀
             </button>
         </div>
 
-        <!-- Quiz Screen -->
+        <!-- Layar Kuis -->
         <div id="quiz-screen" class="hidden">
             <div class="flex justify-between items-end mb-4 px-4">
                 <div>
@@ -184,17 +177,17 @@
             </button>
         </div>
 
-        <!-- End Screen -->
+        <!-- Layar Akhir -->
         <div id="end-screen" class="hidden text-center py-10 relative">
             <div id="confetti-container"></div>
-            <div id="end-emoji" class="text-9xl mb-8 floating">🌈</div>
-            <h1 class="text-5xl text-pink-500 font-black mb-6 celebration-text" id="congrats-title">Yeay!</h1>
+            <div id="end-emoji" class="text-9xl mb-8">🌈</div>
+            <h1 class="text-5xl text-pink-500 font-black mb-6" id="congrats-title">Yeay!</h1>
             <p class="text-2xl text-slate-600 font-bold mb-4 uppercase tracking-widest"><span id="end-player-name"></span>, Skor Kamu:</p>
             <div class="text-8xl font-black text-pink-500 mb-10"><span id="final-score">0</span></div>
-            <div id="evaluation-msg" class="text-2xl text-slate-700 font-extrabold mb-14 px-6 py-4 bg-white border-4 border-pink-200 rounded-3xl italic"></div>
+            <div id="evaluation-msg" class="text-2xl text-slate-700 font-extrabold mb-14 px-6 py-4 bg-white border-4 border-pink-200 rounded-3xl italic shadow-sm"></div>
             
-            <div id="visual-sound" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                 <div class="text-8xl font-black text-yellow-400 celebration-text text-center">TADA! 🎉<br>HOREEE! 🎺</div>
+            <div id="visual-sound" class="hidden fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+                 <div class="text-8xl font-black text-yellow-400 celebration-text text-center drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">TADA! 🎉<br>HOREEE! 🎺</div>
             </div>
 
             <button onclick="location.reload()" class="bg-pink-500 text-white px-12 py-6 rounded-full font-black text-2xl shadow-xl hover:scale-105 transition-all">
@@ -210,10 +203,21 @@
         let score = 0;
         let canAnswer = true;
         
-        // --- SOUND ENGINE (Web Audio API) ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // --- MESIN SUARA (Web Audio API) ---
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
 
         function playSound(type) {
+            if (!audioCtx) return;
+            
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
 
@@ -221,37 +225,39 @@
             gainNode.connect(audioCtx.destination);
 
             if (type === 'correct') {
-                // Bunyi "Blip" Tinggi yang ceria
+                // Suara "Ting" yang jernih
                 oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1); // A5
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                 oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.2);
+                oscillator.stop(audioCtx.currentTime + 0.4);
             } else if (type === 'wrong') {
-                // Bunyi "Buh" rendah
-                oscillator.type = 'sawtooth';
-                oscillator.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
-                oscillator.frequency.linearRampToValueAtTime(110, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                // Suara "Buh" rendah
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+                oscillator.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                 oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.3);
+                oscillator.stop(audioCtx.currentTime + 0.4);
             } else if (type === 'win') {
-                // Bunyi Fanfare Sederhana
-                const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C tinggi
-                notes.forEach((freq, i) => {
+                // Melodi kemenangan (Fanfare)
+                const sequence = [
+                    {f: 523, t: 0}, {f: 659, t: 0.1}, {f: 783, t: 0.2}, {f: 1046, t: 0.4}
+                ];
+                sequence.forEach(s => {
                     const osc = audioCtx.createOscillator();
                     const g = audioCtx.createGain();
                     osc.connect(g);
                     g.connect(audioCtx.destination);
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.15));
-                    g.gain.setValueAtTime(0.1, audioCtx.currentTime + (i * 0.15));
-                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (i * 0.15) + 0.3);
-                    osc.start(audioCtx.currentTime + (i * 0.15));
-                    osc.stop(audioCtx.currentTime + (i * 0.15) + 0.3);
+                    osc.frequency.setValueAtTime(s.f, audioCtx.currentTime + s.t);
+                    g.gain.setValueAtTime(0.2, audioCtx.currentTime + s.t);
+                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + s.t + 0.5);
+                    osc.start(audioCtx.currentTime + s.t);
+                    osc.stop(audioCtx.currentTime + s.t + 0.5);
                 });
             }
         }
@@ -275,15 +281,14 @@
                 alert("Isi namanya dulu ya kiyut! 🎀");
                 return;
             }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            initAudio(); // WAJIB: Aktifkan AudioContext di sini
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('start-screen').classList.remove('hidden');
             document.getElementById('display-name').innerText = playerName;
         }
 
         function startGame() {
+            initAudio(); 
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('quiz-screen').classList.remove('hidden');
             showQuestion();
@@ -301,8 +306,8 @@
             
             q.a.forEach((choice, index) => {
                 const btn = document.createElement('button');
-                btn.className = 'btn-cute-choice';
-                btn.innerHTML = `<span class='mr-3'>⭐</span> ${choice}`;
+                btn.className = 'btn-cute-choice shadow-sm';
+                btn.innerHTML = `<span class='mr-3 text-pink-300'>⭐</span> ${choice}`;
                 btn.onclick = () => checkAnswer(index);
                 container.appendChild(btn);
             });
@@ -351,9 +356,9 @@
             if (score >= 80) {
                 createConfetti();
                 playSound('win');
-                document.getElementById('congrats-title').innerText = "SELAMAT " + playerName.toUpperCase() + "! 🎉";
+                document.getElementById('congrats-title').innerHTML = `<span class="celebration-text block mb-2">SELAMAT ${playerName.toUpperCase()}! 🎉</span>`;
                 document.getElementById('visual-sound').classList.remove('hidden');
-                document.getElementById('evaluation-msg').innerText = "GILA! Kamu pinter banget, selevel asisten John C. Davis! 🦖👑";
+                document.getElementById('evaluation-msg').innerText = "LUAR BIASA! Kamu beneran Geologist handal, " + playerName + "! 🦖👑";
                 document.getElementById('end-emoji').innerText = "👸✨";
             } else {
                 document.getElementById('congrats-title').innerText = "YAY SELESAI!";
@@ -365,12 +370,16 @@
         function createConfetti() {
             const container = document.getElementById('confetti-container');
             const colors = ['#ff85a1', '#ffb7c5', '#f2d74e', '#38bdf8', '#fbbf24'];
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 150; i++) {
                 const conf = document.createElement('div');
                 conf.className = 'confetti';
                 conf.style.left = Math.random() * 100 + 'vw';
                 conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                conf.style.animationDelay = Math.random() * 2 + 's';
+                conf.style.width = (Math.random() * 10 + 5) + 'px';
+                conf.style.height = (Math.random() * 10 + 5) + 'px';
+                conf.style.top = '-20px';
+                conf.style.animationDelay = Math.random() * 3 + 's';
+                conf.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
                 container.appendChild(conf);
             }
         }
