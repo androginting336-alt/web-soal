@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeoQuiz Kiyut - Kelompok 1</title>
+    <!-- Tailwind CSS untuk desain responsif dan cantik -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -46,7 +47,7 @@
         }
 
         .btn-cute-choice:hover:not(:disabled) {
-            transform: scale(1.03) rotate(1deg);
+            transform: scale(1.02) rotate(0.5deg);
             background: #fff0f3;
             border-color: #ff85a1;
         }
@@ -118,7 +119,7 @@
 
         @keyframes popText {
             from { transform: scale(1); }
-            to { transform: scale(1.2); }
+            to { transform: scale(1.15); }
         }
     </style>
 </head>
@@ -126,7 +127,7 @@
 
     <div id="game-container" class="w-full max-w-xl">
         
-        <!-- Layar Selamat Datang -->
+        <!-- Welcome Screen -->
         <div id="welcome-screen" class="text-center py-10">
             <div class="text-9xl mb-6 bounce">🦖</div>
             <h1 class="text-5xl text-pink-500 font-black mb-6">Halo Geologist!</h1>
@@ -138,7 +139,7 @@
             </button>
         </div>
 
-        <!-- Layar Mulai -->
+        <!-- Start Screen -->
         <div id="start-screen" class="hidden text-center py-10">
             <div class="text-7xl mb-4">⛏️💖💎</div>
             <h1 class="text-4xl text-pink-500 font-black mb-4">Siap, <span id="display-name" class="text-slate-700"></span>?</h1>
@@ -148,7 +149,7 @@
             </button>
         </div>
 
-        <!-- Layar Kuis -->
+        <!-- Quiz Screen -->
         <div id="quiz-screen" class="hidden">
             <div class="flex justify-between items-end mb-4 px-4">
                 <div>
@@ -177,7 +178,7 @@
             </button>
         </div>
 
-        <!-- Layar Akhir -->
+        <!-- End Screen -->
         <div id="end-screen" class="hidden text-center py-10 relative">
             <div id="confetti-container"></div>
             <div id="end-emoji" class="text-9xl mb-8">🌈</div>
@@ -187,7 +188,7 @@
             <div id="evaluation-msg" class="text-2xl text-slate-700 font-extrabold mb-14 px-6 py-4 bg-white border-4 border-pink-200 rounded-3xl italic shadow-sm"></div>
             
             <div id="visual-sound" class="hidden fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-                 <div class="text-8xl font-black text-yellow-400 celebration-text text-center drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">TADA! 🎉<br>HOREEE! 🎺</div>
+                 <div class="text-8xl font-black text-yellow-400 celebration-text text-center drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)]">TADA! 🎉<br>HOREEE! 🎺</div>
             </div>
 
             <button onclick="location.reload()" class="bg-pink-500 text-white px-12 py-6 rounded-full font-black text-2xl shadow-xl hover:scale-105 transition-all">
@@ -198,12 +199,13 @@
     </div>
 
     <script>
+        // State Global
         let playerName = "";
         let currentQuestion = 0;
         let score = 0;
         let canAnswer = true;
         
-        // --- MESIN SUARA (Web Audio API) ---
+        // --- Web Audio Engine ---
         let audioCtx;
 
         function initAudio() {
@@ -225,7 +227,6 @@
             gainNode.connect(audioCtx.destination);
 
             if (type === 'correct') {
-                // Suara "Ting" yang jernih
                 oscillator.type = 'sine';
                 oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
                 oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
@@ -234,7 +235,6 @@
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + 0.4);
             } else if (type === 'wrong') {
-                // Suara "Buh" rendah
                 oscillator.type = 'square';
                 oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
                 oscillator.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
@@ -243,15 +243,11 @@
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + 0.4);
             } else if (type === 'win') {
-                // Melodi kemenangan (Fanfare)
-                const sequence = [
-                    {f: 523, t: 0}, {f: 659, t: 0.1}, {f: 783, t: 0.2}, {f: 1046, t: 0.4}
-                ];
+                const sequence = [{f: 523, t: 0}, {f: 659, t: 0.1}, {f: 783, t: 0.2}, {f: 1046, t: 0.4}];
                 sequence.forEach(s => {
                     const osc = audioCtx.createOscillator();
                     const g = audioCtx.createGain();
-                    osc.connect(g);
-                    g.connect(audioCtx.destination);
+                    osc.connect(g); g.connect(audioCtx.destination);
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(s.f, audioCtx.currentTime + s.t);
                     g.gain.setValueAtTime(0.2, audioCtx.currentTime + s.t);
@@ -262,6 +258,7 @@
             }
         }
 
+        // Database Soal Geostatistik
         const questions = [
             { q: "Berapa rata-rata (Mean) porositas dari sampel: 26, 30, 28, 32, 34?", a: ["28%", "30%", "32%", "35%"], correct: 1, msg: "Pinter banget! Hasilnya emang 30. ✨" },
             { q: "Ada data outlier 450m. Mana yang lebih stabil/jujur?", a: ["Mean", "Median", "Modus", "Varian"], correct: 1, msg: "Betul! Median paling sabar sama angka aneh. 🧸" },
@@ -275,13 +272,14 @@
             { q: "Varian kecil pada porositas artinya batuan...", a: ["Sangat keras", "Sangat bervariasi", "Cukup homogen", "Warna-warni"], correct: 2, msg: "Cukup homogen (seragam)! Hebat! 🌸" }
         ];
 
+        // Navigasi & Logika Game
         function checkName() {
             playerName = document.getElementById('player-name').value;
             if (playerName.trim() === "") {
                 alert("Isi namanya dulu ya kiyut! 🎀");
                 return;
             }
-            initAudio(); // WAJIB: Aktifkan AudioContext di sini
+            initAudio(); 
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('start-screen').classList.remove('hidden');
             document.getElementById('display-name').innerText = playerName;
