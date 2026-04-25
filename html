@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoQuiz Kiyut - Kelompok 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700;800&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #fff5f7;
+            background-image: radial-gradient(#ffd1dc 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            overflow-x: hidden;
+        }
+
+        h1, h2, .font-title { font-family: 'Fredoka', cursive; }
+
+        .kawaii-card {
+            background: white;
+            border: 6px solid #ffb7c5;
+            border-bottom: 12px solid #ffb7c5;
+            border-radius: 40px;
+            box-shadow: 0 15px 0px rgba(255, 183, 197, 0.2);
+            position: relative;
+        }
+
+        .btn-cute-choice {
+            background: #ffffff;
+            border: 3px solid #ffc0cb;
+            border-bottom: 8px solid #ffc0cb;
+            border-radius: 25px;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: left;
+            padding: 1.2rem 1.5rem;
+            width: 100%;
+            margin-bottom: 1.2rem;
+            cursor: pointer;
+            font-weight: 800;
+            color: #ff85a1;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-cute-choice:hover:not(:disabled) {
+            transform: scale(1.03) rotate(1deg);
+            background: #fff0f3;
+            border-color: #ff85a1;
+        }
+
+        .btn-cute-choice:active:not(:disabled) {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        .btn-cute-choice.correct {
+            background: #e7ffed;
+            border-color: #74c69d;
+            color: #2d6a4f;
+            border-bottom-width: 8px;
+        }
+
+        .btn-cute-choice.wrong {
+            background: #fff0f0;
+            border-color: #ff8fa3;
+            color: #a4133c;
+            border-bottom-width: 8px;
+        }
+
+        .bounce { animation: bounce 2s infinite; }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        .progress-container {
+            height: 20px;
+            background: #ffe4e9;
+            border-radius: 30px;
+            border: 4px solid #ffb7c5;
+            padding: 2px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff85a1, #ffb7c5);
+            border-radius: 30px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            top: -10px;
+            z-index: 100;
+            animation: fall 3s linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .input-gemoy {
+            border: 4px solid #ffb7c5;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            font-weight: 800;
+            color: #ff85a1;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .input-gemoy:focus { border-color: #ff4d6d; box-shadow: 0 0 15px #ffd1dc; }
+
+        .celebration-text {
+            animation: popText 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate;
+        }
+
+        @keyframes popText {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 flex flex-col items-center justify-center">
+
+    <div id="game-container" class="w-full max-w-xl">
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="text-center py-10">
+            <div class="text-9xl mb-6 bounce">🦖</div>
+            <h1 class="text-5xl text-pink-500 font-black mb-6">Halo Geologist!</h1>
+            <p class="text-xl text-pink-400 font-bold mb-8 italic">Ketik namamu dulu ya biar kiyut: 🎀</p>
+            <input type="text" id="player-name" class="input-gemoy w-full text-2xl mb-8" placeholder="Nama Kamu...">
+            <br>
+            <button onclick="checkName()" class="bg-pink-500 text-white text-2xl font-black px-12 py-5 rounded-full border-b-8 border-pink-700 hover:scale-105 active:translate-y-2 active:border-b-0 transition-all">
+                GAS KAN! ✨
+            </button>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="hidden text-center py-10">
+            <div class="text-7xl mb-4">⛏️💖💎</div>
+            <h1 class="text-4xl text-pink-500 font-black mb-4">Siap, <span id="display-name" class="text-slate-700"></span>?</h1>
+            <p class="text-xl text-pink-400 font-bold mb-10">Bantu Kelompok 1 selesaikan misi ini!</p>
+            <button onclick="startGame()" class="bg-pink-400 text-white text-3xl font-black px-16 py-6 rounded-full border-b-8 border-pink-600 hover:scale-110 active:translate-y-2 transition-all">
+                MULAI YUK! 🚀
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="flex justify-between items-end mb-4 px-4">
+                <div>
+                    <span class="font-title text-pink-500 font-bold text-lg">Soal 🍭</span>
+                    <div class="text-4xl font-black text-slate-700"><span id="current-question-num">1</span><span class="text-pink-200">/10</span></div>
+                </div>
+                <div class="text-right">
+                    <span class="font-title text-pink-500 font-bold text-lg">Skor 🍬</span>
+                    <div class="text-4xl font-black text-pink-500" id="score">0</div>
+                </div>
+            </div>
+            
+            <div class="progress-container mb-10">
+                <div id="progress" class="progress-fill" style="width: 10%"></div>
+            </div>
+
+            <div class="kawaii-card p-8 md:p-12 mb-10">
+                <div id="question-text" class="text-2xl font-extrabold text-slate-800 mb-10 leading-tight text-center"></div>
+                <div id="choices-container"></div>
+            </div>
+
+            <div id="feedback" class="hidden text-center p-6 rounded-3xl mb-8 font-black text-xl border-4 transform rotate-1"></div>
+
+            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-pink-500 text-white py-6 rounded-full font-black text-2xl shadow-xl border-b-8 border-pink-700 active:translate-y-2">
+                LANJUT! 🧸
+            </button>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="hidden text-center py-10 relative">
+            <div id="confetti-container"></div>
+            <div id="end-emoji" class="text-9xl mb-8 floating">🌈</div>
+            <h1 class="text-5xl text-pink-500 font-black mb-6 celebration-text" id="congrats-title">Yeay!</h1>
+            <p class="text-2xl text-slate-600 font-bold mb-4 uppercase tracking-widest"><span id="end-player-name"></span>, Skor Kamu:</p>
+            <div class="text-8xl font-black text-pink-500 mb-10"><span id="final-score">0</span></div>
+            <div id="evaluation-msg" class="text-2xl text-slate-700 font-extrabold mb-14 px-6 py-4 bg-white border-4 border-pink-200 rounded-3xl italic"></div>
+            
+            <div id="visual-sound" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                 <div class="text-8xl font-black text-yellow-400 celebration-text text-center">TADA! 🎉<br>HOREEE! 🎺</div>
+            </div>
+
+            <button onclick="location.reload()" class="bg-pink-500 text-white px-12 py-6 rounded-full font-black text-2xl shadow-xl hover:scale-105 transition-all">
+                MAIN LAGI? 🍭
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        let playerName = "";
+        let currentQuestion = 0;
+        let score = 0;
+        let canAnswer = true;
+        
+        // --- SOUND ENGINE (Web Audio API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                // Bunyi "Blip" Tinggi yang ceria
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1); // A5
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.2);
+            } else if (type === 'wrong') {
+                // Bunyi "Buh" rendah
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+                oscillator.frequency.linearRampToValueAtTime(110, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'win') {
+                // Bunyi Fanfare Sederhana
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C tinggi
+                notes.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    osc.connect(g);
+                    g.connect(audioCtx.destination);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.15));
+                    g.gain.setValueAtTime(0.1, audioCtx.currentTime + (i * 0.15));
+                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (i * 0.15) + 0.3);
+                    osc.start(audioCtx.currentTime + (i * 0.15));
+                    osc.stop(audioCtx.currentTime + (i * 0.15) + 0.3);
+                });
+            }
+        }
+
+        const questions = [
+            { q: "Berapa rata-rata (Mean) porositas dari sampel: 26, 30, 28, 32, 34?", a: ["28%", "30%", "32%", "35%"], correct: 1, msg: "Pinter banget! Hasilnya emang 30. ✨" },
+            { q: "Ada data outlier 450m. Mana yang lebih stabil/jujur?", a: ["Mean", "Median", "Modus", "Varian"], correct: 1, msg: "Betul! Median paling sabar sama angka aneh. 🧸" },
+            { q: "Horizon B (Std Dev 8.2%) vs Horizon A (2.5%). Mana yang lebih heterogen?", a: ["Horizon A", "Horizon B", "Sama saja", "Bingung"], correct: 1, msg: "Betul! Makin besar Std Dev, makin bervariasi. 🍬" },
+            { q: "Kedalaman bitumen dari 45m sampai 160m. Berapa Range-nya?", a: ["100m", "115m", "120m", "205m"], correct: 1, msg: "Range = 160 - 45 = 115m. Jago hitung! 🎀" },
+            { q: "Titik sendirian di luar garis Boxplot namanya apa?", a: ["Inlier", "Outlier", "Median", "Quartile"], correct: 1, msg: "Outlier! Kunci anomali geologi nih. 💎" },
+            { q: "Histogram ekor panjang ke kanan namanya...", a: ["Normal", "Negative Skew", "Positive Skew", "Bimodal"], correct: 2, msg: "Positive Skew! Kayak perosotan kiyut. 🌈" },
+            { q: "Ketebalan yang paling sering muncul disebut...", a: ["Mean", "Median", "Modus", "Range"], correct: 2, msg: "Modus! Dia paling populer di lapangan. 🍭" },
+            { q: "Kenapa Davis suka Skala Phi (Log) buat butiran?", a: ["Biar lucu", "Biar distribusi normal", "Biar dikit angkanya", "Iseng"], correct: 1, msg: "Betul! Membantu normalisasi data. 🦕" },
+            { q: "Apa risikonya kalau cuek sama Outlier?", a: ["Baterai habis", "Salah estimasi cadangan", "Kopi tumpah", "Gak apa-apa"], correct: 1, msg: "Bahaya! Estimasi bisa meleset jauh. ⚒️" },
+            { q: "Varian kecil pada porositas artinya batuan...", a: ["Sangat keras", "Sangat bervariasi", "Cukup homogen", "Warna-warni"], correct: 2, msg: "Cukup homogen (seragam)! Hebat! 🌸" }
+        ];
+
+        function checkName() {
+            playerName = document.getElementById('player-name').value;
+            if (playerName.trim() === "") {
+                alert("Isi namanya dulu ya kiyut! 🎀");
+                return;
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            document.getElementById('display-name').innerText = playerName;
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            canAnswer = true;
+            const q = questions[currentQuestion];
+            document.getElementById('current-question-num').innerText = currentQuestion + 1;
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('progress').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+            
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+            
+            q.a.forEach((choice, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-cute-choice';
+                btn.innerHTML = `<span class='mr-3'>⭐</span> ${choice}`;
+                btn.onclick = () => checkAnswer(index);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(index) {
+            if (!canAnswer) return;
+            canAnswer = false;
+            const q = questions[currentQuestion];
+            const btns = document.getElementsByClassName('btn-cute-choice');
+            const feedback = document.getElementById('feedback');
+
+            if (index === q.correct) {
+                btns[index].classList.add('correct');
+                score += 10;
+                document.getElementById('score').innerText = score;
+                feedback.innerText = q.msg;
+                feedback.className = "text-green-600 bg-white border-green-300 p-6 rounded-3xl mb-8 font-black text-xl border-4 block";
+                playSound('correct');
+            } else {
+                btns[index].classList.add('wrong');
+                btns[q.correct].classList.add('correct');
+                feedback.innerText = "Duh! " + q.msg;
+                feedback.className = "text-red-600 bg-white border-red-300 p-6 rounded-3xl mb-8 font-black text-xl border-4 block";
+                playSound('wrong');
+            }
+            feedback.classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) showQuestion();
+            else showEndScreen();
+        }
+
+        function showEndScreen() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('end-player-name').innerText = playerName;
+            
+            if (score >= 80) {
+                createConfetti();
+                playSound('win');
+                document.getElementById('congrats-title').innerText = "SELAMAT " + playerName.toUpperCase() + "! 🎉";
+                document.getElementById('visual-sound').classList.remove('hidden');
+                document.getElementById('evaluation-msg').innerText = "GILA! Kamu pinter banget, selevel asisten John C. Davis! 🦖👑";
+                document.getElementById('end-emoji').innerText = "👸✨";
+            } else {
+                document.getElementById('congrats-title').innerText = "YAY SELESAI!";
+                document.getElementById('evaluation-msg').innerText = "Bagus " + playerName + "! Belajar dikit lagi biar makin kiyut! 📖💖";
+                document.getElementById('end-emoji').innerText = "🧸";
+            }
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#ff85a1', '#ffb7c5', '#f2d74e', '#38bdf8', '#fbbf24'];
+            for (let i = 0; i < 100; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(conf);
+            }
+        }
+    </script>
+</body>
+</html>
