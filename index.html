@@ -1,386 +1,1194 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoQuiz Kiyut - Kelompok 1</title>
-    <!-- Tailwind CSS untuk desain responsif dan cantik -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700;800&display=swap');
-        
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: #fff5f7;
-            background-image: radial-gradient(#ffd1dc 1.5px, transparent 1.5px);
-            background-size: 25px 25px;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoWisata Explorer</title>
 
-        h1, h2, .font-title { font-family: 'Fredoka', cursive; }
+  <!-- ============================================================
+       DEPENDENCIES
+       - Leaflet.js  : Library peta utama
+       - Google Fonts: Typography
+  ============================================================ -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
-        .kawaii-card {
-            background: white;
-            border: 6px solid #ffb7c5;
-            border-bottom: 12px solid #ffb7c5;
-            border-radius: 40px;
-            box-shadow: 0 15px 0px rgba(255, 183, 197, 0.2);
-            position: relative;
-        }
+  <style>
+    /* ============================================================
+       CSS VARIABLES — Ganti warna & efek di sini
+    ============================================================ */
+    :root {
+      --accent:       #00e5b0;      /* Warna aksen utama (teal/mint) */
+      --accent-2:     #ff6b35;      /* Aksen sekunder (oranye) */
+      --accent-3:     #a78bfa;      /* Aksen tersier (ungu) */
+      --glass-bg:     rgba(8, 12, 20, 0.72);
+      --glass-border: rgba(0, 229, 176, 0.18);
+      --glass-blur:   blur(18px);
+      --surface:      rgba(15, 22, 35, 0.85);
+      --text-primary: #e8f4f0;
+      --text-muted:   #7a9a90;
+      --sidebar-w:    340px;
+      --radius:       14px;
+      --font-display: 'Syne', sans-serif;
+      --font-mono:    'Space Mono', monospace;
+    }
 
-        .btn-cute-choice {
-            background: #ffffff;
-            border: 3px solid #ffc0cb;
-            border-bottom: 8px solid #ffc0cb;
-            border-radius: 25px;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-align: left;
-            padding: 1.2rem 1.5rem;
-            width: 100%;
-            margin-bottom: 1.2rem;
-            cursor: pointer;
-            font-weight: 800;
-            color: #ff85a1;
-            display: flex;
-            align-items: center;
-        }
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .btn-cute-choice:hover:not(:disabled) {
-            transform: scale(1.02) rotate(0.5deg);
-            background: #fff0f3;
-            border-color: #ff85a1;
-        }
+    body {
+      font-family: var(--font-mono);
+      background: #060b14;
+      color: var(--text-primary);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
 
-        .btn-cute-choice.correct {
-            background: #e7ffed;
-            border-color: #74c69d;
-            color: #2d6a4f;
-            border-bottom-width: 8px;
-        }
+    /* ============================================================
+       MAP CONTAINER — Full screen
+    ============================================================ */
+    #map {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
 
-        .btn-cute-choice.wrong {
-            background: #fff0f0;
-            border-color: #ff8fa3;
-            color: #a4133c;
-            border-bottom-width: 8px;
-        }
+    /* Leaflet default attribution restyling */
+    .leaflet-control-attribution {
+      background: var(--glass-bg) !important;
+      color: var(--text-muted) !important;
+      font-family: var(--font-mono) !important;
+      font-size: 9px !important;
+      backdrop-filter: var(--glass-blur) !important;
+      border-radius: 6px 0 0 0 !important;
+    }
+    .leaflet-control-attribution a { color: var(--accent) !important; }
 
-        .bounce { animation: bounce 2s infinite; }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
-        }
+    .leaflet-control-zoom {
+      border: none !important;
+      overflow: hidden;
+      border-radius: 10px !important;
+    }
+    .leaflet-control-zoom a {
+      background: var(--glass-bg) !important;
+      color: var(--accent) !important;
+      border: 1px solid var(--glass-border) !important;
+      font-size: 18px !important;
+      backdrop-filter: var(--glass-blur) !important;
+      transition: background 0.2s;
+    }
+    .leaflet-control-zoom a:hover { background: var(--surface) !important; }
 
-        .progress-container {
-            height: 20px;
-            background: #ffe4e9;
-            border-radius: 30px;
-            border: 4px solid #ffb7c5;
-            padding: 2px;
-        }
+    /* ============================================================
+       SIDEBAR — Glassmorphism floating panel (kiri)
+    ============================================================ */
+    #sidebar {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      bottom: 20px;
+      width: var(--sidebar-w);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none; /* agar klik 'tembus' ke area kosong */
+    }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff85a1, #ffb7c5);
-            border-radius: 30px;
-            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+    /* Semua panel di dalam sidebar bisa diklik */
+    #sidebar > * { pointer-events: all; }
 
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            z-index: 100;
-            animation: fall 3s linear forwards;
-        }
+    /* ---- Header Panel ---- */
+    .panel-header {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 20px 22px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-3), var(--accent-2));
+    }
+    .panel-header .logo-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .panel-header h1 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+    .panel-header h1 span { color: var(--accent); }
+    .panel-header .subtitle {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      letter-spacing: 0.5px;
+    }
 
-        @keyframes fall {
-            to { transform: translateY(100vh) rotate(360deg); }
-        }
+    /* Koordinat & Stats row */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .stat-chip {
+      flex: 1;
+      background: rgba(0,229,176,0.07);
+      border: 1px solid rgba(0,229,176,0.15);
+      border-radius: 8px;
+      padding: 7px 10px;
+      text-align: center;
+    }
+    .stat-chip .val {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+    .stat-chip .lbl { font-size: 8px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
 
-        .input-gemoy {
-            border: 4px solid #ffb7c5;
-            border-radius: 20px;
-            padding: 15px;
-            text-align: center;
-            font-weight: 800;
-            color: #ff85a1;
-            outline: none;
-            transition: all 0.3s;
-        }
-        
-        .input-gemoy:focus { border-color: #ff4d6d; box-shadow: 0 0 15px #ffd1dc; }
+    /* ---- Basemap Switcher ---- */
+    .panel-control {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .panel-control .ctrl-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .basemap-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .basemap-btn {
+      flex: 1;
+      padding: 8px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      text-align: center;
+    }
+    .basemap-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+    .basemap-btn.active {
+      background: rgba(0,229,176,0.12);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .basemap-btn .icon { font-size: 16px; display: block; margin-bottom: 3px; }
 
-        .celebration-text {
-            animation: popText 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate;
-        }
+    /* ---- Filter Panel ---- */
+    .filter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .filter-tag {
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .filter-tag:hover { border-color: var(--accent); color: var(--text-primary); }
+    .filter-tag.active {
+      background: rgba(0,229,176,0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    /* Warna berbeda per kategori */
+    .filter-tag[data-cat="Batuan"].active    { background: rgba(167,139,250,0.15); border-color: var(--accent-3); color: var(--accent-3); }
+    .filter-tag[data-cat="Air Terjun"].active { background: rgba(0,180,255,0.15);  border-color: #00b4ff;          color: #00b4ff; }
+    .filter-tag[data-cat="Bentang Alam"].active { background: rgba(255,107,53,0.15); border-color: var(--accent-2); color: var(--accent-2); }
+    .filter-tag[data-cat="Gua"].active      { background: rgba(255,200,50,0.15);  border-color: #ffc832;          color: #ffc832; }
+    .filter-tag[data-cat="Pantai"].active   { background: rgba(0,229,176,0.15);   border-color: var(--accent);    color: var(--accent); }
 
-        @keyframes popText {
-            from { transform: scale(1); }
-            to { transform: scale(1.15); }
-        }
-    </style>
+    /* ---- Lokasi List Panel ---- */
+    #location-list-panel {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .list-header {
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .list-header .title { font-size: 9px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+    .list-header .count {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(0,229,176,0.1);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    #location-list {
+      overflow-y: auto;
+      flex: 1;
+      padding: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
+    }
+    #location-list::-webkit-scrollbar { width: 4px; }
+    #location-list::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+    /* Tiap item lokasi di list */
+    .loc-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 4px;
+    }
+    .loc-item:hover { background: rgba(0,229,176,0.07); border-color: var(--glass-border); }
+    .loc-item.active { background: rgba(0,229,176,0.12); border-color: var(--accent); }
+
+    .loc-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .loc-info { flex: 1; min-width: 0; }
+    .loc-name {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .loc-meta {
+      font-size: 9px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      gap: 6px;
+    }
+    .loc-cat {
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .loc-acc { color: var(--text-muted); }
+    .loc-arrow { color: var(--text-muted); font-size: 10px; flex-shrink: 0; }
+    .loc-item.active .loc-arrow { color: var(--accent); }
+
+    /* ============================================================
+       FLOATING TOP-RIGHT: Koordinat Cursor
+    ============================================================ */
+    #coords-hud {
+      position: fixed;
+      top: 20px;
+      right: 70px; /* beri jarak dari zoom ctrl */
+      z-index: 100;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    #coords-hud span { color: var(--accent); }
+
+    /* ============================================================
+       RICH POPUP — Custom Leaflet Popup
+    ============================================================ */
+    .leaflet-popup-content-wrapper {
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      border-radius: var(--radius) !important;
+    }
+    .leaflet-popup-tip-container { display: none; }
+    .leaflet-popup-close-button {
+      color: var(--text-muted) !important;
+      font-size: 18px !important;
+      top: 10px !important;
+      right: 12px !important;
+      z-index: 10;
+    }
+    .leaflet-popup-close-button:hover { color: var(--accent) !important; }
+
+    .geo-popup {
+      width: 280px;
+      background: rgba(8, 14, 24, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-family: var(--font-mono);
+    }
+    .geo-popup .popup-img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+      position: relative;
+    }
+    /* Gradient overlay di atas foto */
+    .geo-popup .popup-img-wrap {
+      position: relative;
+    }
+    .geo-popup .popup-img-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: linear-gradient(transparent, rgba(8,14,24,0.9));
+    }
+    .geo-popup .popup-cat-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
+      z-index: 2;
+    }
+    .geo-popup .popup-body { padding: 14px 16px; }
+    .geo-popup .popup-name {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .geo-popup .popup-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .geo-popup .popup-meta {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .geo-popup .meta-pill {
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-size: 9px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .geo-popup .popup-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 10px;
+    }
+    .geo-popup .acc-indicator { display: flex; gap: 4px; align-items: center; }
+    .geo-popup .acc-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
+    .geo-popup .acc-dot.filled { background: var(--accent); }
+    .geo-popup .acc-label { font-size: 9px; color: var(--text-muted); margin-left: 4px; }
+    .geo-popup .detail-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: rgba(0,229,176,0.12);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .geo-popup .detail-btn:hover { background: var(--accent); color: #060b14; }
+
+    /* ============================================================
+       CUSTOM MARKER ICON
+    ============================================================ */
+    .geo-marker {
+      width: 32px; height: 32px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+    }
+    .geo-marker:hover { transform: rotate(-45deg) scale(1.15); }
+    .geo-marker .inner { transform: rotate(45deg); font-size: 14px; }
+
+    /* ---- Pulse ring di sekitar marker aktif ---- */
+    @keyframes pulse-ring {
+      0%   { transform: scale(0.8); opacity: 0.8; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    .geo-marker.pulse::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50% 50% 50% 0;
+      border: 2px solid var(--accent);
+      animation: pulse-ring 1.4s ease-out infinite;
+    }
+
+    /* ============================================================
+       LOADING OVERLAY
+    ============================================================ */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: #060b14;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s ease;
+    }
+    #loading.hidden { opacity: 0; pointer-events: none; }
+    .loader-logo { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; }
+    .loader-logo span { color: var(--accent); }
+    .loader-sub { font-size: 10px; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; }
+    .loader-bar { width: 180px; height: 2px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+    @keyframes load-anim { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    .loader-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, transparent, var(--accent), transparent); animation: load-anim 1.2s ease infinite; }
+
+    /* ============================================================
+       DETAIL MODAL — muncul saat "Lihat Detail" diklik
+    ============================================================ */
+    #detail-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(6, 11, 20, 0.7);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #detail-modal.show { opacity: 1; pointer-events: all; }
+    .modal-card {
+      width: 460px;
+      max-width: 90vw;
+      background: rgba(10, 16, 28, 0.95);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      font-family: var(--font-mono);
+    }
+    #detail-modal.show .modal-card { transform: translateY(0); }
+    .modal-img {
+      width: 100%; height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .modal-body { padding: 20px 24px 24px; }
+    .modal-cat { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+    .modal-name { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px; line-height: 1.2; }
+    .modal-desc { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+    .modal-field label { font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 3px; }
+    .modal-field .val { font-size: 12px; color: var(--text-primary); }
+    .modal-coords { font-family: var(--font-mono); font-size: 10px; color: var(--accent); }
+    .modal-close-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(0,229,176,0.08);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-close-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ============================================================
+       RESPONSIVE — layar kecil
+    ============================================================ */
+    @media (max-width: 600px) {
+      :root { --sidebar-w: calc(100vw - 32px); }
+      #sidebar { top: auto; bottom: 16px; left: 16px; right: 16px; max-height: 55vh; }
+      #coords-hud { display: none; }
+    }
+  </style>
 </head>
-<body class="min-h-screen p-4 flex flex-col items-center justify-center">
+<body>
 
-    <div id="game-container" class="w-full max-w-xl">
-        
-        <!-- Welcome Screen -->
-        <div id="welcome-screen" class="text-center py-10">
-            <div class="text-9xl mb-6 bounce">🦖</div>
-            <h1 class="text-5xl text-pink-500 font-black mb-6">Halo Geologist!</h1>
-            <p class="text-xl text-pink-400 font-bold mb-8 italic">Ketik namamu dulu ya biar kiyut: 🎀</p>
-            <input type="text" id="player-name" class="input-gemoy w-full text-2xl mb-8" placeholder="Nama Kamu...">
-            <br>
-            <button onclick="checkName()" class="bg-pink-500 text-white text-2xl font-black px-12 py-5 rounded-full border-b-8 border-pink-700 hover:scale-105 active:translate-y-2 active:border-b-0 transition-all shadow-lg">
-                GAS KAN! ✨
-            </button>
-        </div>
+<!-- ============================================================
+     LOADING SCREEN
+============================================================ -->
+<div id="loading">
+  <div class="loader-logo">Geo<span>Wisata</span></div>
+  <div class="loader-sub">Explorer · Geologi</div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
 
-        <!-- Start Screen -->
-        <div id="start-screen" class="hidden text-center py-10">
-            <div class="text-7xl mb-4">⛏️💖💎</div>
-            <h1 class="text-4xl text-pink-500 font-black mb-4">Siap, <span id="display-name" class="text-slate-700"></span>?</h1>
-            <p class="text-xl text-pink-400 font-bold mb-10">Bantu Kelompok 1 selesaikan misi ini!</p>
-            <button onclick="startGame()" class="bg-pink-400 text-white text-3xl font-black px-16 py-6 rounded-full border-b-8 border-pink-600 hover:scale-110 active:translate-y-2 transition-all shadow-xl">
-                MULAI YUK! 🚀
-            </button>
-        </div>
+<!-- ============================================================
+     MAP CANVAS
+============================================================ -->
+<div id="map"></div>
 
-        <!-- Quiz Screen -->
-        <div id="quiz-screen" class="hidden">
-            <div class="flex justify-between items-end mb-4 px-4">
-                <div>
-                    <span class="font-title text-pink-500 font-bold text-lg">Soal 🍭</span>
-                    <div class="text-4xl font-black text-slate-700"><span id="current-question-num">1</span><span class="text-pink-200">/10</span></div>
-                </div>
-                <div class="text-right">
-                    <span class="font-title text-pink-500 font-bold text-lg">Skor 🍬</span>
-                    <div class="text-4xl font-black text-pink-500" id="score">0</div>
-                </div>
-            </div>
-            
-            <div class="progress-container mb-10">
-                <div id="progress" class="progress-fill" style="width: 10%"></div>
-            </div>
+<!-- ============================================================
+     HUD — Koordinat cursor (kanan atas)
+============================================================ -->
+<div id="coords-hud">
+  LAT: <span id="hud-lat">–––</span> &nbsp; LON: <span id="hud-lng">–––</span>
+</div>
 
-            <div class="kawaii-card p-8 md:p-12 mb-10">
-                <div id="question-text" class="text-2xl font-extrabold text-slate-800 mb-10 leading-tight text-center"></div>
-                <div id="choices-container"></div>
-            </div>
+<!-- ============================================================
+     SIDEBAR (kiri)
+============================================================ -->
+<div id="sidebar">
 
-            <div id="feedback" class="hidden text-center p-6 rounded-3xl mb-8 font-black text-xl border-4 transform rotate-1"></div>
+  <!-- Header / Branding -->
+  <div class="panel-header">
+    <div class="logo-tag">⬡ Web-GIS · Geowisata</div>
+    <h1>Geo<span>Wisata</span><br>Explorer</h1>
+    <div class="subtitle">Area Penelitian — Universitas Anda</div>
 
-            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-pink-500 text-white py-6 rounded-full font-black text-2xl shadow-xl border-b-8 border-pink-700 active:translate-y-2">
-                LANJUT! 🧸
-            </button>
-        </div>
-
-        <!-- End Screen -->
-        <div id="end-screen" class="hidden text-center py-10 relative">
-            <div id="confetti-container"></div>
-            <div id="end-emoji" class="text-9xl mb-8">🌈</div>
-            <h1 class="text-5xl text-pink-500 font-black mb-6" id="congrats-title">Yeay!</h1>
-            <p class="text-2xl text-slate-600 font-bold mb-4 uppercase tracking-widest"><span id="end-player-name"></span>, Skor Kamu:</p>
-            <div class="text-8xl font-black text-pink-500 mb-10"><span id="final-score">0</span></div>
-            <div id="evaluation-msg" class="text-2xl text-slate-700 font-extrabold mb-14 px-6 py-4 bg-white border-4 border-pink-200 rounded-3xl italic shadow-sm"></div>
-            
-            <div id="visual-sound" class="hidden fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-                 <div class="text-8xl font-black text-yellow-400 celebration-text text-center drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)]">TADA! 🎉<br>HOREEE! 🎺</div>
-            </div>
-
-            <button onclick="location.reload()" class="bg-pink-500 text-white px-12 py-6 rounded-full font-black text-2xl shadow-xl hover:scale-105 transition-all">
-                MAIN LAGI? 🍭
-            </button>
-        </div>
-
+    <!-- Stat chips — diupdate otomatis oleh JS -->
+    <div class="stats-row">
+      <div class="stat-chip">
+        <span class="val" id="stat-total">0</span>
+        <span class="lbl">Situs</span>
+      </div>
+      <div class="stat-chip">
+        <span class="val" id="stat-visible">0</span>
+        <span class="lbl">Tampil</span>
+      </div>
+      <div class="stat-chip">
+        <span class="val" id="stat-cats">0</span>
+        <span class="lbl">Kategori</span>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // State Global
-        let playerName = "";
-        let currentQuestion = 0;
-        let score = 0;
-        let canAnswer = true;
-        
-        // --- Web Audio Engine ---
-        let audioCtx;
+  <!-- Basemap Switcher -->
+  <div class="panel-control">
+    <div class="ctrl-label">🗺 Basemap</div>
+    <div class="basemap-btns">
+      <button class="basemap-btn active" id="btn-dark" onclick="switchBasemap('dark')">
+        <span class="icon">🌑</span> Dark Matter
+      </button>
+      <button class="basemap-btn" id="btn-satellite" onclick="switchBasemap('satellite')">
+        <span class="icon">🛰</span> Satellite
+      </button>
+    </div>
+  </div>
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
+  <!-- Filter Kategori -->
+  <div class="panel-control">
+    <div class="ctrl-label">🔍 Filter Kategori</div>
+    <div class="filter-tags" id="filter-tags">
+      <!-- Tag filter akan di-generate otomatis dari data GeoJSON -->
+      <span class="filter-tag active" data-cat="ALL" onclick="applyFilter(this)">Semua</span>
+    </div>
+  </div>
 
-        function playSound(type) {
-            if (!audioCtx) return;
-            
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
+  <!-- Daftar Lokasi -->
+  <div id="location-list-panel">
+    <div class="list-header">
+      <span class="title">📍 Daftar Lokasi</span>
+      <span class="count" id="list-count">0</span>
+    </div>
+    <div id="location-list">
+      <!-- Diisi oleh JavaScript -->
+    </div>
+  </div>
 
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
+</div>
 
-            if (type === 'correct') {
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.4);
-            } else if (type === 'wrong') {
-                oscillator.type = 'square';
-                oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
-                oscillator.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.4);
-            } else if (type === 'win') {
-                const sequence = [{f: 523, t: 0}, {f: 659, t: 0.1}, {f: 783, t: 0.2}, {f: 1046, t: 0.4}];
-                sequence.forEach(s => {
-                    const osc = audioCtx.createOscillator();
-                    const g = audioCtx.createGain();
-                    osc.connect(g); g.connect(audioCtx.destination);
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(s.f, audioCtx.currentTime + s.t);
-                    g.gain.setValueAtTime(0.2, audioCtx.currentTime + s.t);
-                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + s.t + 0.5);
-                    osc.start(audioCtx.currentTime + s.t);
-                    osc.stop(audioCtx.currentTime + s.t + 0.5);
-                });
-            }
-        }
+<!-- ============================================================
+     DETAIL MODAL
+============================================================ -->
+<div id="detail-modal" onclick="closeModal(event)">
+  <div class="modal-card">
+    <img class="modal-img" id="modal-img" src="" alt="" />
+    <div class="modal-body">
+      <div class="modal-cat" id="modal-cat"></div>
+      <div class="modal-name" id="modal-name"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-grid">
+        <div class="modal-field">
+          <label>Aksesibilitas</label>
+          <div class="val" id="modal-acc"></div>
+        </div>
+        <div class="modal-field">
+          <label>Koordinat</label>
+          <div class="val modal-coords" id="modal-coords"></div>
+        </div>
+        <div class="modal-field">
+          <label>Formasi Geologi</label>
+          <div class="val" id="modal-geo"></div>
+        </div>
+        <div class="modal-field">
+          <label>Kondisi</label>
+          <div class="val" id="modal-kondisi"></div>
+        </div>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal()">✕ Tutup</button>
+    </div>
+  </div>
+</div>
 
-        // Database Soal Geostatistik
-        const questions = [
-            { q: "Berapa rata-rata (Mean) porositas dari sampel: 26, 30, 28, 32, 34?", a: ["28%", "30%", "32%", "35%"], correct: 1, msg: "Pinter banget! Hasilnya emang 30. ✨" },
-            { q: "Ada data outlier 450m. Mana yang lebih stabil/jujur?", a: ["Mean", "Median", "Modus", "Varian"], correct: 1, msg: "Betul! Median paling sabar sama angka aneh. 🧸" },
-            { q: "Horizon B (Std Dev 8.2%) vs Horizon A (2.5%). Mana yang lebih heterogen?", a: ["Horizon A", "Horizon B", "Sama saja", "Bingung"], correct: 1, msg: "Betul! Makin besar Std Dev, makin bervariasi. 🍬" },
-            { q: "Kedalaman bitumen dari 45m sampai 160m. Berapa Range-nya?", a: ["100m", "115m", "120m", "205m"], correct: 1, msg: "Range = 160 - 45 = 115m. Jago hitung! 🎀" },
-            { q: "Titik sendirian di luar garis Boxplot namanya apa?", a: ["Inlier", "Outlier", "Median", "Quartile"], correct: 1, msg: "Outlier! Kunci anomali geologi nih. 💎" },
-            { q: "Histogram ekor panjang ke kanan namanya...", a: ["Normal", "Negative Skew", "Positive Skew", "Bimodal"], correct: 2, msg: "Positive Skew! Kayak perosotan kiyut. 🌈" },
-            { q: "Ketebalan yang paling sering muncul disebut...", a: ["Mean", "Median", "Modus", "Range"], correct: 2, msg: "Modus! Dia paling populer di lapangan. 🍭" },
-            { q: "Kenapa Davis suka Skala Phi (Log) buat butiran?", a: ["Biar lucu", "Biar distribusi normal", "Biar dikit angkanya", "Iseng"], correct: 1, msg: "Betul! Membantu normalisasi data. 🦕" },
-            { q: "Apa risikonya kalau cuek sama Outlier?", a: ["Baterai habis", "Salah estimasi cadangan", "Kopi tumpah", "Gak apa-apa"], correct: 1, msg: "Bahaya! Estimasi bisa meleset jauh. ⚒️" },
-            { q: "Varian kecil pada porositas artinya batuan...", a: ["Sangat keras", "Sangat bervariasi", "Cukup homogen", "Warna-warni"], correct: 2, msg: "Cukup homogen (seragam)! Hebat! 🌸" }
-        ];
 
-        // Navigasi & Logika Game
-        function checkName() {
-            playerName = document.getElementById('player-name').value;
-            if (playerName.trim() === "") {
-                alert("Isi namanya dulu ya kiyut! 🎀");
-                return;
-            }
-            initAudio(); 
-            document.getElementById('welcome-screen').classList.add('hidden');
-            document.getElementById('start-screen').classList.remove('hidden');
-            document.getElementById('display-name').innerText = playerName;
-        }
+<script>
+/* ================================================================
+   GEOWISATA EXPLORER — Main Script
+   Dibuat sebagai boilerplate modular untuk penelitian geologi.
+   Semua bagian yang perlu dimodifikasi diberi tanda ← EDIT SINI
+================================================================ */
 
-        function startGame() {
-            initAudio(); 
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
-            showQuestion();
-        }
+// ----------------------------------------------------------------
+// 1. KONFIGURASI AWAL — ← EDIT SINI sesuai area penelitianmu
+// ----------------------------------------------------------------
+const CONFIG = {
+  // Koordinat pusat view awal peta (lat, lng)
+  // Ganti dengan koordinat area penelitianmu
+  centerLat:  -7.5,
+  centerLng:  110.5,
+  zoomInit:   10,        // Zoom awal (10–13 biasanya bagus untuk kabupaten)
+  zoomFlyTo:  14,        // Zoom saat fly-to ke marker
 
-        function showQuestion() {
-            canAnswer = true;
-            const q = questions[currentQuestion];
-            document.getElementById('current-question-num').innerText = currentQuestion + 1;
-            document.getElementById('question-text').innerText = q.q;
-            document.getElementById('progress').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
-            
-            const container = document.getElementById('choices-container');
-            container.innerHTML = '';
-            
-            q.a.forEach((choice, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-cute-choice shadow-sm';
-                btn.innerHTML = `<span class='mr-3 text-pink-300'>⭐</span> ${choice}`;
-                btn.onclick = () => checkAnswer(index);
-                container.appendChild(btn);
-            });
+  // Path ke file GeoJSON eksternalmu
+  // Letakkan file .geojson di folder yang sama dengan HTML ini,
+  // lalu ganti string di bawah. Contoh: './data/situs_geowisata.geojson'
+  geojsonPath: null,     // ← GANTI dengan path file-mu, contoh: './data/geowisata.geojson'
 
-            document.getElementById('feedback').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-        }
+  // Jika kamu belum punya GeoJSON eksternal, data SAMPLE di bawah akan dipakai.
+  useSampleData: true,   // ← Ubah ke false jika sudah pakai file GeoJSON eksternalmu
+};
 
-        function checkAnswer(index) {
-            if (!canAnswer) return;
-            canAnswer = false;
-            const q = questions[currentQuestion];
-            const btns = document.getElementsByClassName('btn-cute-choice');
-            const feedback = document.getElementById('feedback');
+// ----------------------------------------------------------------
+// 2. SAMPLE DATA — Format GeoJSON standar
+//    Ini adalah contoh schema yang ideal untuk proyek geowisatamu.
+//    Properties yang bisa kamu pakai:
+//      nama_situs        → Nama lokasi geowisata
+//      kategori          → Jenis: Batuan / Bentang Alam / Air Terjun / Gua / Pantai
+//      deskripsi_geologi → Deskripsi geologis singkat
+//      aksesibilitas     → 'Mudah' | 'Sedang' | 'Sulit'
+//      formasi           → Formasi/umur batuan
+//      kondisi           → Kondisi saat ini
+//      image_url         → URL foto lokasi (bisa pakai Unsplash, lokal, dst.)
+// ----------------------------------------------------------------
+const SAMPLE_GEOJSON = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [110.42, -7.48] }, // [lng, lat] ← format GeoJSON!
+      properties: {
+        nama_situs:        "Tebing Breksi",
+        kategori:          "Batuan",
+        deskripsi_geologi: "Singkapan breksi vulkanik berumur Oligosen-Miosen, bekas tambang batu yang kini menjadi geosite iconic dengan relief pahatan dinding batu.",
+        aksesibilitas:     "Mudah",
+        formasi:           "Fm. Semilir (Oligosen–Miosen)",
+        kondisi:           "Terawat, Terbuka",
+        image_url:         "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"
+      }
+    },
+    {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [110.55, -7.52] },
+      properties: {
+        nama_situs:        "Air Terjun Luweng Sampang",
+        kategori:          "Air Terjun",
+        deskripsi_geologi: "Aliran sungai yang memotong batu gamping karstik membentuk pola aliran bawah tanah (luweng). Proses karstifikasi aktif.",
+        aksesibilitas:     "Sedang",
+        formasi:           "Fm. Wonosari (Miosen Tengah)",
+        kondisi:           "Musiman, Bagus di Musim Hujan",
+        image_url:         "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600"
+      }
+    },
+    {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [110.38, -7.62] },
+      properties: {
+        nama_situs:        "Gumuk Pasir Parangtritis",
+        kategori:          "Bentang Alam",
+        deskripsi_geologi: "Satu-satunya gumuk pasir tipe barchan di Asia Tenggara. Terbentuk dari material vulkanik Merapi yang terbawa Kali Opak dan ditiup angin laut.",
+        aksesibilitas:     "Mudah",
+        formasi:           "Endapan Kuarter / Eolian",
+        kondisi:           "Aktif bergerak",
+        image_url:         "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600"
+      }
+    },
+    {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [110.60, -7.40] },
+      properties: {
+        nama_situs:        "Gua Pindul",
+        kategori:          "Gua",
+        deskripsi_geologi: "Gua sungai bawah tanah di kawasan karst Gunung Kidul. Stalaktit dan stalagmit aktif terbentuk dari proses pelarutan batu gamping.",
+        aksesibilitas:     "Mudah",
+        formasi:           "Fm. Wonosari — Batu Gamping Terumbu",
+        kondisi:           "Terbuka untuk wisata",
+        image_url:         "https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=600"
+      }
+    },
+    {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [110.72, -7.58] },
+      properties: {
+        nama_situs:        "Pantai Siung — Dinding Batu Gamping",
+        kategori:          "Pantai",
+        deskripsi_geologi: "Pantai berbatu dengan singkapan batu gamping klastik. Formasi karbonat menampilkan struktur perlapisan, fosil moluska, dan notch abrasi laut.",
+        aksesibilitas:     "Sedang",
+        formasi:           "Fm. Wonosari (Miosen)",
+        kondisi:           "Alami, Minim infrastruktur",
+        image_url:         "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"
+      }
+    },
+    {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [110.44, -7.35] },
+      properties: {
+        nama_situs:        "Kali Kuning — Lahar Merapi",
+        kategori:          "Batuan",
+        deskripsi_geologi: "Singkapan endapan lahar dan awan panas (pyroclastic density current) dari erupsi Merapi 2010. Graded bedding dan struktur sedimen primer masih terlihat jelas.",
+        aksesibilitas:     "Sedang",
+        formasi:           "Endapan Vulkanik Kuarter Merapi",
+        kondisi:           "Aktif, perlu pantau cuaca",
+        image_url:         "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600"
+      }
+    }
+  ]
+};
 
-            if (index === q.correct) {
-                btns[index].classList.add('correct');
-                score += 10;
-                document.getElementById('score').innerText = score;
-                feedback.innerText = q.msg;
-                feedback.className = "text-green-600 bg-white border-green-300 p-6 rounded-3xl mb-8 font-black text-xl border-4 block";
-                playSound('correct');
-            } else {
-                btns[index].classList.add('wrong');
-                btns[q.correct].classList.add('correct');
-                feedback.innerText = "Duh! " + q.msg;
-                feedback.className = "text-red-600 bg-white border-red-300 p-6 rounded-3xl mb-8 font-black text-xl border-4 block";
-                playSound('wrong');
-            }
-            feedback.classList.remove('hidden');
-            document.getElementById('next-btn').classList.remove('hidden');
-        }
 
-        function nextQuestion() {
-            currentQuestion++;
-            if (currentQuestion < questions.length) showQuestion();
-            else showEndScreen();
-        }
+// ----------------------------------------------------------------
+// 3. KONFIGURASI WARNA & IKON PER KATEGORI
+//    Tambah kategori baru di sini jika datamu punya lebih banyak
+// ----------------------------------------------------------------
+const CATEGORY_CONFIG = {
+  "Batuan":      { color: "#a78bfa", emoji: "🪨", bg: "rgba(167,139,250,0.2)" },
+  "Air Terjun":  { color: "#00b4ff", emoji: "💧", bg: "rgba(0,180,255,0.2)"   },
+  "Bentang Alam":{ color: "#ff6b35", emoji: "🏔", bg: "rgba(255,107,53,0.2)"  },
+  "Gua":         { color: "#ffc832", emoji: "🦇", bg: "rgba(255,200,50,0.2)"  },
+  "Pantai":      { color: "#00e5b0", emoji: "🌊", bg: "rgba(0,229,176,0.2)"   },
+  "DEFAULT":     { color: "#e8f4f0", emoji: "📍", bg: "rgba(232,244,240,0.2)" },
+};
 
-        function showEndScreen() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('end-screen').classList.remove('hidden');
-            document.getElementById('final-score').innerText = score;
-            document.getElementById('end-player-name').innerText = playerName;
-            
-            if (score >= 80) {
-                createConfetti();
-                playSound('win');
-                document.getElementById('congrats-title').innerHTML = `<span class="celebration-text block mb-2">SELAMAT ${playerName.toUpperCase()}! 🎉</span>`;
-                document.getElementById('visual-sound').classList.remove('hidden');
-                document.getElementById('evaluation-msg').innerText = "LUAR BIASA! Kamu beneran Geologist handal, " + playerName + "! 🦖👑";
-                document.getElementById('end-emoji').innerText = "👸✨";
-            } else {
-                document.getElementById('congrats-title').innerText = "YAY SELESAI!";
-                document.getElementById('evaluation-msg').innerText = "Bagus " + playerName + "! Belajar dikit lagi biar makin kiyut! 📖💖";
-                document.getElementById('end-emoji').innerText = "🧸";
-            }
-        }
+// ----------------------------------------------------------------
+// 4. AKSESIBILITAS → jumlah dot yang terisi
+// ----------------------------------------------------------------
+const ACC_LEVEL = { "Mudah": 3, "Sedang": 2, "Sulit": 1 };
 
-        function createConfetti() {
-            const container = document.getElementById('confetti-container');
-            const colors = ['#ff85a1', '#ffb7c5', '#f2d74e', '#38bdf8', '#fbbf24'];
-            for (let i = 0; i < 150; i++) {
-                const conf = document.createElement('div');
-                conf.className = 'confetti';
-                conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                conf.style.width = (Math.random() * 10 + 5) + 'px';
-                conf.style.height = (Math.random() * 10 + 5) + 'px';
-                conf.style.top = '-20px';
-                conf.style.animationDelay = Math.random() * 3 + 's';
-                conf.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
-                container.appendChild(conf);
-            }
-        }
-    </script>
+// ================================================================
+// GLOBAL STATE
+// ================================================================
+let map;                    // Objek Leaflet map
+let layerGroup;             // LayerGroup untuk semua marker
+let allFeatures = [];       // Menyimpan semua fitur GeoJSON
+let activeFilter = "ALL";   // Filter aktif saat ini
+let activeItem  = null;     // Item lokasi yang aktif di sidebar
+
+// ================================================================
+// BASEMAP LAYERS — Tambah/ganti tileset di sini
+// ================================================================
+const BASEMAPS = {
+  dark: L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    {
+      attribution: '© <a href="https://carto.com/">CARTO</a>',
+      maxZoom: 19,
+      subdomains: "abcd"
+    }
+  ),
+  satellite: L.tileLayer(
+    "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+    {
+      attribution: '© Google Satellite',
+      maxZoom: 20
+    }
+  )
+};
+let currentBasemap = "dark";
+
+// ================================================================
+// INIT — dijalankan saat DOM siap
+// ================================================================
+document.addEventListener("DOMContentLoaded", () => {
+  initMap();
+  loadGeoJSON();
+
+  // Hide loading setelah semua siap
+  setTimeout(() => {
+    document.getElementById("loading").classList.add("hidden");
+  }, 1800);
+});
+
+/* ---------------------------------------------------------------
+   initMap() — Inisialisasi peta Leaflet
+--------------------------------------------------------------- */
+function initMap() {
+  map = L.map("map", {
+    center:         [CONFIG.centerLat, CONFIG.centerLng],
+    zoom:           CONFIG.zoomInit,
+    zoomControl:    false,         // Kita posisikan ulang
+    attributionControl: true,
+  });
+
+  // Pasang basemap awal (dark)
+  BASEMAPS.dark.addTo(map);
+
+  // Pindahkan tombol zoom ke kanan atas
+  L.control.zoom({ position: "topright" }).addTo(map);
+
+  // Layer group untuk marker (agar mudah show/hide)
+  layerGroup = L.layerGroup().addTo(map);
+
+  // HUD koordinat — update saat mouse bergerak
+  map.on("mousemove", (e) => {
+    document.getElementById("hud-lat").textContent = e.latlng.lat.toFixed(5);
+    document.getElementById("hud-lng").textContent = e.latlng.lng.toFixed(5);
+  });
+}
+
+/* ---------------------------------------------------------------
+   switchBasemap() — Toggle antara dark dan satellite
+--------------------------------------------------------------- */
+function switchBasemap(type) {
+  if (type === currentBasemap) return;
+
+  // Hapus basemap lama, tambah yang baru
+  map.removeLayer(BASEMAPS[currentBasemap]);
+  BASEMAPS[type].addTo(map);
+  BASEMAPS[type].bringToBack();  // Pastikan basemap di paling bawah
+
+  currentBasemap = type;
+
+  // Update tombol aktif
+  document.querySelectorAll(".basemap-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("btn-" + type).classList.add("active");
+}
+
+/* ---------------------------------------------------------------
+   loadGeoJSON() — Load data dari file eksternal atau sample data
+--------------------------------------------------------------- */
+async function loadGeoJSON() {
+  let geojsonData;
+
+  if (!CONFIG.useSampleData && CONFIG.geojsonPath) {
+    // Ambil dari file GeoJSON eksternalmu
+    try {
+      const response = await fetch(CONFIG.geojsonPath);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      geojsonData = await response.json();
+      console.log("[GeoWisata] GeoJSON loaded from:", CONFIG.geojsonPath);
+    } catch (err) {
+      console.error("[GeoWisata] Gagal load GeoJSON:", err);
+      console.warn("[GeoWisata] Fallback ke sample data...");
+      geojsonData = SAMPLE_GEOJSON;
+    }
+  } else {
+    // Pakai sample data bawaan
+    geojsonData = SAMPLE_GEOJSON;
+    console.log("[GeoWisata] Menggunakan sample data. Ganti CONFIG.geojsonPath untuk data aslimu.");
+  }
+
+  allFeatures = geojsonData.features;
+  buildFilterTags();  // Buat tombol filter dari data
+  renderFeatures(allFeatures);
+  updateStats(allFeatures.length, allFeatures.length);
+}
+
+/* ---------------------------------------------------------------
+   buildFilterTags() — Generate tombol filter dari kategori unik di data
+--------------------------------------------------------------- */
+function buildFilterTags() {
+  // Ambil semua kategori unik
+  const cats = [...new Set(allFeatures.map(f => f.properties.kategori))].filter(Boolean);
+
+  const container = document.getElementById("filter-tags");
+  // Reset (pertahankan tombol "Semua")
+  container.innerHTML = `<span class="filter-tag active" data-cat="ALL" onclick="applyFilter(this)">Semua</span>`;
+
+  cats.forEach(cat => {
+    const cfg   = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG.DEFAULT;
+    const span  = document.createElement("span");
+    span.className    = "filter-tag";
+    span.dataset.cat  = cat;
+    span.textContent  = `${cfg.emoji} ${cat}`;
+    span.onclick      = () => applyFilter(span);
+    container.appendChild(span);
+  });
+
+  // Update stat kategori
+  document.getElementById("stat-cats").textContent = cats.length;
+}
+
+/* ---------------------------------------------------------------
+   applyFilter() — Filter marker berdasarkan kategori
+--------------------------------------------------------------- */
+function applyFilter(el) {
+  // Update UI filter tags
+  document.querySelectorAll(".filter-tag").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+
+  activeFilter = el.dataset.cat;
+
+  const filtered = activeFilter === "ALL"
+    ? allFeatures
+    : allFeatures.filter(f => f.properties.kategori === activeFilter);
+
+  renderFeatures(filtered);
+  updateStats(allFeatures.length, filtered.length);
+}
+
+/* ---------------------------------------------------------------
+   renderFeatures() — Render marker dan list sidebar dari array features
+--------------------------------------------------------------- */
+function renderFeatures(features) {
+  layerGroup.clearLayers();
+  const listEl = document.getElementById("location-list");
+  listEl.innerHTML = "";
+
+  features.forEach((feature, idx) => {
+    const props = feature.properties;
+    const [lng, lat] = feature.geometry.coordinates; // GeoJSON = [lng, lat]!
+    const cfg = CATEGORY_CONFIG[props.kategori] || CATEGORY_CONFIG.DEFAULT;
+
+    // ---- Buat Custom Marker HTML ----
+    const markerHtml = `
+      <div class="geo-marker" style="background:${cfg.bg}; border-color:${cfg.color};">
+        <div class="inner">${cfg.emoji}</div>
+      </div>`;
+
+    const icon = L.divIcon({
+      html: markerHtml,
+      className: "",              // Hapus class default Leaflet
+      iconSize:   [32, 32],
+      iconAnchor: [16, 32],       // Titik anchor di ujung bawah
+      popupAnchor:[0, -34],
+    });
+
+    const marker = L.marker([lat, lng], { icon }).addTo(layerGroup);
+
+    // ---- Bind Rich Popup ----
+    const accLevel  = ACC_LEVEL[props.aksesibilitas] || 2;
+    const accDots   = [1,2,3].map(n =>
+      `<span class="acc-dot ${n <= accLevel ? "filled" : ""}"></span>`
+    ).join("");
+
+    const popupHtml = `
+      <div class="geo-popup">
+        <div class="popup-img-wrap">
+          <img class="popup-img" src="${props.image_url || 'https://via.placeholder.com/280x150'}"
+               alt="${props.nama_situs}"
+               onerror="this.src='https://via.placeholder.com/280x150/1a2535/00e5b0?text=No+Image'" />
+          <div class="popup-cat-badge" style="background:${cfg.bg}; color:${cfg.color}; border:1px solid ${cfg.color}40;">
+            ${cfg.emoji} ${props.kategori}
+          </div>
+        </div>
+        <div class="popup-body">
+          <div class="popup-name">${props.nama_situs}</div>
+          <div class="popup-desc">${props.deskripsi_geologi || '–'}</div>
+          <div class="popup-meta">
+            <div class="meta-pill">📐 ${props.formasi || '–'}</div>
+            <div class="meta-pill">🌿 ${props.kondisi || '–'}</div>
+          </div>
+          <div class="popup-footer">
+            <div class="acc-indicator">
+              ${accDots}
+              <span class="acc-label">${props.aksesibilitas}</span>
+            </div>
+            <button class="detail-btn" onclick="openModal(${idx}, ${features.indexOf(feature) >= 0 ? features.indexOf(feature) : 0})">
+              Lihat Detail →
+            </button>
+          </div>
+        </div>
+      </div>`;
+
+    marker.bindPopup(popupHtml, {
+      maxWidth: 300,
+      className: "geo-popup-wrap",
+    });
+
+    // Simpan referensi marker ke feature (untuk fly-to dari sidebar)
+    feature._marker = marker;
+    feature._latlng = [lat, lng];
+
+    // ---- Buat Item di Sidebar ----
+    const item = document.createElement("div");
+    item.className  = "loc-item";
+    item.dataset.idx = idx;
+    item.innerHTML  = `
+      <div class="loc-icon" style="background:${cfg.bg};">${cfg.emoji}</div>
+      <div class="loc-info">
+        <div class="loc-name">${props.nama_situs}</div>
+        <div class="loc-meta">
+          <span class="loc-cat" style="background:${cfg.bg}; color:${cfg.color};">${props.kategori}</span>
+          <span class="loc-acc">⚡ ${props.aksesibilitas}</span>
+        </div>
+      </div>
+      <span class="loc-arrow">›</span>`;
+
+    // Klik item di sidebar → fly-to marker & buka popup
+    item.addEventListener("click", () => {
+      flyToFeature(feature, item);
+    });
+
+    listEl.appendChild(item);
+  });
+
+  // Update counter list
+  document.getElementById("list-count").textContent = features.length;
+}
+
+/* ---------------------------------------------------------------
+   flyToFeature() — Smooth fly-to saat item sidebar diklik
+--------------------------------------------------------------- */
+function flyToFeature(feature, listItem) {
+  const [lat, lng] = feature._latlng;
+
+  // Update active state di sidebar
+  if (activeItem) activeItem.classList.remove("active");
+  listItem.classList.add("active");
+  activeItem = listItem;
+
+  // Fly-to dengan animasi halus
+  map.flyTo([lat, lng], CONFIG.zoomFlyTo, {
+    duration: 1.2,        // Durasi animasi (detik)
+    easeLinearity: 0.25,
+  });
+
+  // Buka popup setelah animasi selesai
+  setTimeout(() => {
+    if (feature._marker) feature._marker.openPopup();
+  }, 1300);
+}
+
+/* ---------------------------------------------------------------
+   openModal() — Tampilkan detail modal
+--------------------------------------------------------------- */
+function openModal(featureIdxInRendered, originalIdx) {
+  // Cari feature di allFeatures yang sesuai
+  // (kita pakai data dari popup yang dikirim index-nya)
+  const feature = allFeatures.find(f =>
+    f.properties && allFeatures.indexOf(f) === originalIdx
+  ) || allFeatures[originalIdx] || allFeatures[featureIdxInRendered];
+
+  if (!feature) return;
+  const p   = feature.properties;
+  const cfg = CATEGORY_CONFIG[p.kategori] || CATEGORY_CONFIG.DEFAULT;
+  const [lng, lat] = feature.geometry.coordinates;
+
+  document.getElementById("modal-img").src        = p.image_url || "https://via.placeholder.com/460x200";
+  document.getElementById("modal-cat").textContent = `${cfg.emoji} ${p.kategori}`;
+  document.getElementById("modal-cat").style.color = cfg.color;
+  document.getElementById("modal-name").textContent = p.nama_situs;
+  document.getElementById("modal-desc").textContent = p.deskripsi_geologi;
+  document.getElementById("modal-acc").textContent  = p.aksesibilitas;
+  document.getElementById("modal-coords").textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  document.getElementById("modal-geo").textContent  = p.formasi || "–";
+  document.getElementById("modal-kondisi").textContent = p.kondisi || "–";
+
+  document.getElementById("detail-modal").classList.add("show");
+}
+
+/* ---------------------------------------------------------------
+   closeModal() — Tutup detail modal
+--------------------------------------------------------------- */
+function closeModal(e) {
+  // Hanya tutup jika klik di luar card atau tombol tutup
+  if (e && e.target !== document.getElementById("detail-modal")) return;
+  document.getElementById("detail-modal").classList.remove("show");
+}
+
+/* ---------------------------------------------------------------
+   updateStats() — Update angka di chip stats
+--------------------------------------------------------------- */
+function updateStats(total, visible) {
+  document.getElementById("stat-total").textContent   = total;
+  document.getElementById("stat-visible").textContent = visible;
+}
+
+/* ---------------------------------------------------------------
+   Keyboard shortcut — Escape untuk tutup modal
+--------------------------------------------------------------- */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal({ target: document.getElementById("detail-modal") });
+});
+
+</script>
 </body>
 </html>
