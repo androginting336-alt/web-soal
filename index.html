@@ -3,26 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GeoWisata Explorer</title>
+  <title>GeoWisata Sabu-Raijua Explorer - Ekspedisi 2024</title>
 
-  <!-- ============================================================
-       DEPENDENCIES
-       - Leaflet.js  : Library peta utama
-       - Google Fonts: Typography
-  ============================================================ -->
+  <!-- DEPENDENCIES: Leaflet & Google Fonts -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
-    /* ============================================================
-       CSS VARIABLES — Ganti warna & efek di sini
-    ============================================================ */
     :root {
-      --accent:       #00e5b0;      /* Warna aksen utama (teal/mint) */
-      --accent-2:     #ff6b35;      /* Aksen sekunder (oranye) */
-      --accent-3:     #a78bfa;      /* Aksen tersier (ungu) */
+      --accent:       #00e5b0;
+      --accent-2:     #ff6b35;
+      --accent-3:     #a78bfa;
       --glass-bg:     rgba(8, 12, 20, 0.72);
       --glass-border: rgba(0, 229, 176, 0.18);
       --glass-blur:   blur(18px);
@@ -35,9 +28,6 @@
       --font-mono:    'Space Mono', monospace;
     }
 
-    /* ============================================================
-       RESET & BASE
-    ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -49,9 +39,6 @@
       width: 100vw;
     }
 
-    /* ============================================================
-       MAP CONTAINER — Full screen
-    ============================================================ */
     #map {
       position: fixed;
       inset: 0;
@@ -60,7 +47,6 @@
       z-index: 1;
     }
 
-    /* Leaflet default attribution restyling */
     .leaflet-control-attribution {
       background: var(--glass-bg) !important;
       color: var(--text-muted) !important;
@@ -86,9 +72,6 @@
     }
     .leaflet-control-zoom a:hover { background: var(--surface) !important; }
 
-    /* ============================================================
-       SIDEBAR — Glassmorphism floating panel (kiri)
-    ============================================================ */
     #sidebar {
       position: fixed;
       top: 20px;
@@ -99,17 +82,13 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      pointer-events: none; /* agar klik 'tembus' ke area kosong */
+      pointer-events: none;
     }
-
-    /* Semua panel di dalam sidebar bisa diklik */
     #sidebar > * { pointer-events: all; }
 
-    /* ---- Header Panel ---- */
     .panel-header {
       background: var(--glass-bg);
       backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
       padding: 20px 22px 18px;
@@ -147,12 +126,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* Koordinat & Stats row */
-    .stats-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-    }
+    .stats-row { display: flex; gap: 8px; margin-top: 12px; }
     .stat-chip {
       flex: 1;
       background: rgba(0,229,176,0.07);
@@ -170,11 +144,9 @@
     }
     .stat-chip .lbl { font-size: 8px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
 
-    /* ---- Basemap Switcher ---- */
     .panel-control {
       background: var(--glass-bg);
       backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
       padding: 14px 16px;
@@ -186,10 +158,7 @@
       text-transform: uppercase;
       margin-bottom: 10px;
     }
-    .basemap-btns {
-      display: flex;
-      gap: 8px;
-    }
+    .basemap-btns { display: flex; gap: 8px; }
     .basemap-btn {
       flex: 1;
       padding: 8px 6px;
@@ -209,15 +178,8 @@
       border-color: var(--accent);
       color: var(--accent);
     }
-    .basemap-btn .icon { font-size: 16px; display: block; margin-bottom: 3px; }
 
-    /* ---- Filter Panel ---- */
-    .filter-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
+    .filter-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
     .filter-tag {
       padding: 5px 12px;
       border-radius: 20px;
@@ -236,18 +198,17 @@
       border-color: var(--accent);
       color: var(--accent);
     }
-    /* Warna berbeda per kategori */
-    .filter-tag[data-cat="Batuan"].active    { background: rgba(167,139,250,0.15); border-color: var(--accent-3); color: var(--accent-3); }
-    .filter-tag[data-cat="Air Terjun"].active { background: rgba(0,180,255,0.15);  border-color: #00b4ff;          color: #00b4ff; }
+    
+    .filter-tag[data-cat="Bukit"].active    { background: rgba(167,139,250,0.15); border-color: var(--accent-3); color: var(--accent-3); }
+    .filter-tag[data-cat="Danau"].active    { background: rgba(0,180,255,0.15);  border-color: #00b4ff;          color: #00b4ff; }
     .filter-tag[data-cat="Bentang Alam"].active { background: rgba(255,107,53,0.15); border-color: var(--accent-2); color: var(--accent-2); }
     .filter-tag[data-cat="Gua"].active      { background: rgba(255,200,50,0.15);  border-color: #ffc832;          color: #ffc832; }
     .filter-tag[data-cat="Pantai"].active   { background: rgba(0,229,176,0.15);   border-color: var(--accent);    color: var(--accent); }
+    .filter-tag[data-cat="Embung"].active   { background: rgba(14,165,233,0.15);  border-color: #0ea5e9;          color: #0ea5e9; }
 
-    /* ---- Lokasi List Panel ---- */
     #location-list-panel {
       background: var(--glass-bg);
       backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
       overflow: hidden;
@@ -283,7 +244,6 @@
     #location-list::-webkit-scrollbar { width: 4px; }
     #location-list::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 
-    /* Tiap item lokasi di list */
     .loc-item {
       display: flex;
       align-items: center;
@@ -333,17 +293,13 @@
     .loc-arrow { color: var(--text-muted); font-size: 10px; flex-shrink: 0; }
     .loc-item.active .loc-arrow { color: var(--accent); }
 
-    /* ============================================================
-       FLOATING TOP-RIGHT: Koordinat Cursor
-    ============================================================ */
     #coords-hud {
       position: fixed;
       top: 20px;
-      right: 70px; /* beri jarak dari zoom ctrl */
+      right: 20px;
       z-index: 100;
       background: var(--glass-bg);
       backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
       border-radius: 8px;
       padding: 8px 14px;
@@ -354,9 +310,6 @@
     }
     #coords-hud span { color: var(--accent); }
 
-    /* ============================================================
-       RICH POPUP — Custom Leaflet Popup
-    ============================================================ */
     .leaflet-popup-content-wrapper {
       background: transparent !important;
       box-shadow: none !important;
@@ -388,12 +341,8 @@
       height: 150px;
       object-fit: cover;
       display: block;
-      position: relative;
     }
-    /* Gradient overlay di atas foto */
-    .geo-popup .popup-img-wrap {
-      position: relative;
-    }
+    .geo-popup .popup-img-wrap { position: relative; }
     .geo-popup .popup-img-wrap::after {
       content: '';
       position: absolute;
@@ -426,23 +375,10 @@
       color: var(--text-muted);
       line-height: 1.6;
       margin-bottom: 12px;
-    }
-    .geo-popup .popup-meta {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .geo-popup .meta-pill {
-      padding: 3px 9px;
-      border-radius: 4px;
-      font-size: 9px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     .geo-popup .popup-footer {
       display: flex;
@@ -451,14 +387,6 @@
       border-top: 1px solid var(--glass-border);
       padding-top: 10px;
     }
-    .geo-popup .acc-indicator { display: flex; gap: 4px; align-items: center; }
-    .geo-popup .acc-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.1);
-    }
-    .geo-popup .acc-dot.filled { background: var(--accent); }
-    .geo-popup .acc-label { font-size: 9px; color: var(--text-muted); margin-left: 4px; }
     .geo-popup .detail-btn {
       padding: 6px 14px;
       border-radius: 6px;
@@ -473,9 +401,6 @@
     }
     .geo-popup .detail-btn:hover { background: var(--accent); color: #060b14; }
 
-    /* ============================================================
-       CUSTOM MARKER ICON
-    ============================================================ */
     .geo-marker {
       width: 32px; height: 32px;
       border-radius: 50% 50% 50% 0;
@@ -488,7 +413,6 @@
     .geo-marker:hover { transform: rotate(-45deg) scale(1.15); }
     .geo-marker .inner { transform: rotate(45deg); font-size: 14px; }
 
-    /* ---- Pulse ring di sekitar marker aktif ---- */
     @keyframes pulse-ring {
       0%   { transform: scale(0.8); opacity: 0.8; }
       100% { transform: scale(2.2); opacity: 0; }
@@ -502,9 +426,6 @@
       animation: pulse-ring 1.4s ease-out infinite;
     }
 
-    /* ============================================================
-       LOADING OVERLAY
-    ============================================================ */
     #loading {
       position: fixed;
       inset: 0;
@@ -524,9 +445,6 @@
     @keyframes load-anim { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
     .loader-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, transparent, var(--accent), transparent); animation: load-anim 1.2s ease infinite; }
 
-    /* ============================================================
-       DETAIL MODAL — muncul saat "Lihat Detail" diklik
-    ============================================================ */
     #detail-modal {
       position: fixed;
       inset: 0;
@@ -551,6 +469,8 @@
       transform: translateY(20px);
       transition: transform 0.3s ease;
       font-family: var(--font-mono);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     #detail-modal.show .modal-card { transform: translateY(0); }
     .modal-img {
@@ -564,8 +484,7 @@
     .modal-desc { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; }
     .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
     .modal-field label { font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 3px; }
-    .modal-field .val { font-size: 12px; color: var(--text-primary); }
-    .modal-coords { font-family: var(--font-mono); font-size: 10px; color: var(--accent); }
+    .modal-field .val { font-size: 12px; color: var(--text-primary); word-break: break-word; }
     .modal-close-btn {
       width: 100%;
       padding: 10px;
@@ -580,51 +499,33 @@
     }
     .modal-close-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ============================================================
-       RESPONSIVE — layar kecil
-    ============================================================ */
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       :root { --sidebar-w: calc(100vw - 32px); }
-      #sidebar { top: auto; bottom: 16px; left: 16px; right: 16px; max-height: 55vh; }
+      #sidebar { top: auto; bottom: 16px; left: 16px; right: 16px; max-height: 45vh; }
       #coords-hud { display: none; }
+      .leaflet-control-zoom { display: none !important; }
     }
   </style>
 </head>
 <body>
 
-<!-- ============================================================
-     LOADING SCREEN
-============================================================ -->
 <div id="loading">
-  <div class="loader-logo">Geo<span>Wisata</span></div>
-  <div class="loader-sub">Explorer · Geologi</div>
+  <div class="loader-logo">Sabu<span>Raijua</span></div>
+  <div class="loader-sub">Ekspedisi Geologi 2024</div>
   <div class="loader-bar"><div class="loader-bar-fill"></div></div>
 </div>
 
-<!-- ============================================================
-     MAP CANVAS
-============================================================ -->
 <div id="map"></div>
 
-<!-- ============================================================
-     HUD — Koordinat cursor (kanan atas)
-============================================================ -->
 <div id="coords-hud">
   LAT: <span id="hud-lat">–––</span> &nbsp; LON: <span id="hud-lng">–––</span>
 </div>
 
-<!-- ============================================================
-     SIDEBAR (kiri)
-============================================================ -->
 <div id="sidebar">
-
-  <!-- Header / Branding -->
   <div class="panel-header">
-    <div class="logo-tag">⬡ Web-GIS · Geowisata</div>
-    <h1>Geo<span>Wisata</span><br>Explorer</h1>
-    <div class="subtitle">Area Penelitian — Universitas Anda</div>
-
-    <!-- Stat chips — diupdate otomatis oleh JS -->
+    <div class="logo-tag">⬡ Web-GIS · Ekspedisi 2024</div>
+    <h1>Geo<span>Wisata</span><br>Sabu-Raijua</h1>
+    <div class="subtitle">Pemetaan Potensi Geologi Pulau Sabu & Raijua</div>
     <div class="stats-row">
       <div class="stat-chip">
         <span class="val" id="stat-total">0</span>
@@ -641,45 +542,31 @@
     </div>
   </div>
 
-  <!-- Basemap Switcher -->
   <div class="panel-control">
     <div class="ctrl-label">🗺 Basemap</div>
     <div class="basemap-btns">
-      <button class="basemap-btn active" id="btn-dark" onclick="switchBasemap('dark')">
-        <span class="icon">🌑</span> Dark Matter
-      </button>
-      <button class="basemap-btn" id="btn-satellite" onclick="switchBasemap('satellite')">
-        <span class="icon">🛰</span> Satellite
-      </button>
+      <button class="basemap-btn active" id="btn-dark" onclick="switchBasemap('dark')">🌑 Dark</button>
+      <button class="basemap-btn" id="btn-satellite" onclick="switchBasemap('satellite')">🛰 Satellite</button>
     </div>
   </div>
 
-  <!-- Filter Kategori -->
   <div class="panel-control">
     <div class="ctrl-label">🔍 Filter Kategori</div>
     <div class="filter-tags" id="filter-tags">
-      <!-- Tag filter akan di-generate otomatis dari data GeoJSON -->
-      <span class="filter-tag active" data-cat="ALL" onclick="applyFilter(this)">Semua</span>
+      <span class="filter-tag active" data-cat="ALL" onclick="applyFilter(this, 'ALL')">Semua</span>
     </div>
   </div>
 
-  <!-- Daftar Lokasi -->
   <div id="location-list-panel">
     <div class="list-header">
-      <span class="title">📍 Daftar Lokasi</span>
+      <span class="title">📍 Daftar Lokasi (31 Situs)</span>
       <span class="count" id="list-count">0</span>
     </div>
-    <div id="location-list">
-      <!-- Diisi oleh JavaScript -->
-    </div>
+    <div id="location-list"></div>
   </div>
-
 </div>
 
-<!-- ============================================================
-     DETAIL MODAL
-============================================================ -->
-<div id="detail-modal" onclick="closeModal(event)">
+<div id="detail-modal" onclick="closeModalBg(event)">
   <div class="modal-card">
     <img class="modal-img" id="modal-img" src="" alt="" />
     <div class="modal-body">
@@ -693,15 +580,15 @@
         </div>
         <div class="modal-field">
           <label>Koordinat</label>
-          <div class="val modal-coords" id="modal-coords"></div>
+          <div class="val" id="modal-coords" style="font-size: 10px;"></div>
         </div>
         <div class="modal-field">
           <label>Formasi Geologi</label>
-          <div class="val" id="modal-geo"></div>
+          <div class="val" id="modal-geo" style="font-size: 10px;"></div>
         </div>
         <div class="modal-field">
-          <label>Kondisi</label>
-          <div class="val" id="modal-kondisi"></div>
+          <label>Kondisi & Bahaya</label>
+          <div class="val" id="modal-kondisi" style="font-size: 10px;"></div>
         </div>
       </div>
       <button class="modal-close-btn" onclick="closeModal()">✕ Tutup</button>
@@ -709,486 +596,268 @@
   </div>
 </div>
 
-
 <script>
-/* ================================================================
-   GEOWISATA EXPLORER — Main Script
-   Dibuat sebagai boilerplate modular untuk penelitian geologi.
-   Semua bagian yang perlu dimodifikasi diberi tanda ← EDIT SINI
-================================================================ */
-
-// ----------------------------------------------------------------
-// 1. KONFIGURASI AWAL — ← EDIT SINI sesuai area penelitianmu
-// ----------------------------------------------------------------
 const CONFIG = {
-  // Koordinat pusat view awal peta (lat, lng)
-  // Ganti dengan koordinat area penelitianmu
-  centerLat:  -7.5,
-  centerLng:  110.5,
-  zoomInit:   10,        // Zoom awal (10–13 biasanya bagus untuk kabupaten)
-  zoomFlyTo:  14,        // Zoom saat fly-to ke marker
-
-  // Path ke file GeoJSON eksternalmu
-  // Letakkan file .geojson di folder yang sama dengan HTML ini,
-  // lalu ganti string di bawah. Contoh: './data/situs_geowisata.geojson'
-  geojsonPath: null,     // ← GANTI dengan path file-mu, contoh: './data/geowisata.geojson'
-
-  // Jika kamu belum punya GeoJSON eksternal, data SAMPLE di bawah akan dipakai.
-  useSampleData: true,   // ← Ubah ke false jika sudah pakai file GeoJSON eksternalmu
+  centerLat:  -10.5500,
+  centerLng:  121.8500,
+  zoomInit:   11,       
+  zoomFlyTo:  14
 };
 
-// ----------------------------------------------------------------
-// 2. SAMPLE DATA — Format GeoJSON standar
-//    Ini adalah contoh schema yang ideal untuk proyek geowisatamu.
-//    Properties yang bisa kamu pakai:
-//      nama_situs        → Nama lokasi geowisata
-//      kategori          → Jenis: Batuan / Bentang Alam / Air Terjun / Gua / Pantai
-//      deskripsi_geologi → Deskripsi geologis singkat
-//      aksesibilitas     → 'Mudah' | 'Sedang' | 'Sulit'
-//      formasi           → Formasi/umur batuan
-//      kondisi           → Kondisi saat ini
-//      image_url         → URL foto lokasi (bisa pakai Unsplash, lokal, dst.)
-// ----------------------------------------------------------------
+// DATA GEOJSON dari Ekspedisi Sabu-Raijua 2024
 const SAMPLE_GEOJSON = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [110.42, -7.48] }, // [lng, lat] ← format GeoJSON!
-      properties: {
-        nama_situs:        "Tebing Breksi",
-        kategori:          "Batuan",
-        deskripsi_geologi: "Singkapan breksi vulkanik berumur Oligosen-Miosen, bekas tambang batu yang kini menjadi geosite iconic dengan relief pahatan dinding batu.",
-        aksesibilitas:     "Mudah",
-        formasi:           "Fm. Semilir (Oligosen–Miosen)",
-        kondisi:           "Terawat, Terbuka",
-        image_url:         "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"
-      }
-    },
-    {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [110.55, -7.52] },
-      properties: {
-        nama_situs:        "Air Terjun Luweng Sampang",
-        kategori:          "Air Terjun",
-        deskripsi_geologi: "Aliran sungai yang memotong batu gamping karstik membentuk pola aliran bawah tanah (luweng). Proses karstifikasi aktif.",
-        aksesibilitas:     "Sedang",
-        formasi:           "Fm. Wonosari (Miosen Tengah)",
-        kondisi:           "Musiman, Bagus di Musim Hujan",
-        image_url:         "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600"
-      }
-    },
-    {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [110.38, -7.62] },
-      properties: {
-        nama_situs:        "Gumuk Pasir Parangtritis",
-        kategori:          "Bentang Alam",
-        deskripsi_geologi: "Satu-satunya gumuk pasir tipe barchan di Asia Tenggara. Terbentuk dari material vulkanik Merapi yang terbawa Kali Opak dan ditiup angin laut.",
-        aksesibilitas:     "Mudah",
-        formasi:           "Endapan Kuarter / Eolian",
-        kondisi:           "Aktif bergerak",
-        image_url:         "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600"
-      }
-    },
-    {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [110.60, -7.40] },
-      properties: {
-        nama_situs:        "Gua Pindul",
-        kategori:          "Gua",
-        deskripsi_geologi: "Gua sungai bawah tanah di kawasan karst Gunung Kidul. Stalaktit dan stalagmit aktif terbentuk dari proses pelarutan batu gamping.",
-        aksesibilitas:     "Mudah",
-        formasi:           "Fm. Wonosari — Batu Gamping Terumbu",
-        kondisi:           "Terbuka untuk wisata",
-        image_url:         "https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=600"
-      }
-    },
-    {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [110.72, -7.58] },
-      properties: {
-        nama_situs:        "Pantai Siung — Dinding Batu Gamping",
-        kategori:          "Pantai",
-        deskripsi_geologi: "Pantai berbatu dengan singkapan batu gamping klastik. Formasi karbonat menampilkan struktur perlapisan, fosil moluska, dan notch abrasi laut.",
-        aksesibilitas:     "Sedang",
-        formasi:           "Fm. Wonosari (Miosen)",
-        kondisi:           "Alami, Minim infrastruktur",
-        image_url:         "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"
-      }
-    },
-    {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [110.44, -7.35] },
-      properties: {
-        nama_situs:        "Kali Kuning — Lahar Merapi",
-        kategori:          "Batuan",
-        deskripsi_geologi: "Singkapan endapan lahar dan awan panas (pyroclastic density current) dari erupsi Merapi 2010. Graded bedding dan struktur sedimen primer masih terlihat jelas.",
-        aksesibilitas:     "Sedang",
-        formasi:           "Endapan Vulkanik Kuarter Merapi",
-        kondisi:           "Aktif, perlu pantau cuaca",
-        image_url:         "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600"
-      }
-    }
+  "type": "FeatureCollection",
+  "features": [
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.99320138888889, -10.497381388888888]}, "properties": {"id": 1, "nama_situs": "Pantai Raemea", "kategori": "Pantai", "deskripsi_geologi": "Morfologi pantai sempit yang berbatasan dengan tebing (15 meter)\nTerdapat gugusan terumbu karang sekitar 500 dari pantai kearah laut", "aksesibilitas": "Sedang", "formasi": "Batugamping terumbu Kuarter (Qa) yang terangkat dan perlapisan batugamping kalkarenit-kalsilutit Formasi Batuputih (Rosidi dkk., 1996; Roosmawati dan Harris, 2009)", "kondisi": "Terdapat patahan/sesar\nLongsor pada tebing dengan slope tinggi\nGelombang tinggi ", "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.73847222222223, -10.590333333333334]}, "properties": {"id": 2, "nama_situs": "Bukit Lobohede (BTS Telkomsel Lobohede)", "kategori": "Bukit", "deskripsi_geologi": "Perbukitan struktural terdenudasi", "aksesibilitas": "Sedang", "formasi": "Formasi Batuputih (Rosidi dkk., 1996; Roosmawati dan Harris, 2009)", "kondisi": "Longsor pada tebing dengan slope tinggi", "image_url": "https://images.unsplash.com/photo-1629196914167-1ebddab56eb4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.692362836394, -10.5828180171381]}, "properties": {"id": 3, "nama_situs": "Pantai Bodo", "kategori": "Pantai", "deskripsi_geologi": "Garis pantai berpasir dengan endapan alluvium serta singkapan batugamping koral di sekitarnya.", "aksesibilitas": "Mudah", "formasi": "Endapan pantai dan batugamping terumbu", "kondisi": "Area pesisir landai", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.68667377511600, -10.578991228700700]}, "properties": {"id": 4, "nama_situs": "Danau Porohohu", "kategori": "Danau", "deskripsi_geologi": "Cekungan geomorfologi yang menampung air tawar di area pulau karang. Berfungsi sebagai mata air vital dan sistem hidrologi lokal.", "aksesibilitas": "Mudah", "formasi": "Cekungan struktur pada batuan sedimen", "kondisi": "Fluktuatif bergantung musim", "image_url": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.7407104824310, -10.547760755329500]}, "properties": {"id": 5, "nama_situs": "Goa Lie Madira", "kategori": "Gua", "deskripsi_geologi": "Gua eksokarst alami yang terbentuk dari proses pelarutan batuan karbonat. Sistem rekahan terbuka yang menembus litologi purba.", "aksesibilitas": "Sedang", "formasi": "Batugamping Formasi Sabu", "kondisi": "Lokasi masih alami dan minim penerangan", "image_url": "https://images.unsplash.com/photo-1499566727020-881adcd902cc?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.71658415730000, -10.557681447712000]}, "properties": {"id": 6, "nama_situs": "Pantai Molie", "kategori": "Pantai", "deskripsi_geologi": "Pesisir dengan karakteristik ombak besar berhadapan dengan Samudera Hindia. Terdapat struktur batuan vulkanik dan sedimen klastik.", "aksesibilitas": "Sedang", "formasi": "Endapan pantai dan material vulkanik", "kondisi": "Arus laut kuat, daerah abrasi", "image_url": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.88415268216349, -10.445110319944012]}, "properties": {"id": 7, "nama_situs": "Mata Air Ei Madabubu", "kategori": "Danau", "deskripsi_geologi": "Sumber mata air (spring) yang keluar dari bidang sentuh antara batuan permeabel dan batuan kedap air di wilayah struktural Sabu.", "aksesibilitas": "Mudah", "formasi": "Akuifer pada Formasi Lutu/Batuputih", "kondisi": "Air mengalir sepanjang tahun, dimanfaatkan warga", "image_url": "https://images.unsplash.com/photo-1437482078695-73f5af6e68fd?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.8890, -10.5360]}, "properties": {"id": 8, "nama_situs": "Goa Lie Mabala", "kategori": "Gua", "deskripsi_geologi": "Gua karst tersembunyi yang memiliki ruang bawah tanah yang dipenuhi oleh ornamen gua (stalaktit dan stalagmit) yang eksotis.", "aksesibilitas": "Sulit", "formasi": "Batugamping Karst Sabu", "kondisi": "Gelap, perlu penerangan, terawat", "image_url": "https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85175583160849, -10.543200759322874]}, "properties": {"id": 9, "nama_situs": "Embung Guriola", "kategori": "Embung", "deskripsi_geologi": "Daerah tangkapan air buatan (embung) yang memanfaatkan cekungan geomorfologi batuan dasar dengan tingkat permeabilitas sangat rendah.", "aksesibilitas": "Mudah", "formasi": "Sedimen Kuarter", "kondisi": "Stabil, berfungsi baik sebagai penyimpan air hujan", "image_url": "https://images.unsplash.com/photo-1543085601-5231c26b6f79?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85705, -10.589075]}, "properties": {"id": 10, "nama_situs": "Bukit Lipatan Eiowu", "kategori": "Bukit", "deskripsi_geologi": "Morfologi perbukitan yang merupakan manifestasi dari proses deformasi struktur lipatan (fold) akibat tektonik pulau.", "aksesibilitas": "Sedang", "formasi": "Perlapisan sedimen tersier", "kondisi": "Vegetasi sabana", "image_url": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.87256551435466, -10.575585261153275]}, "properties": {"id": 11, "nama_situs": "Bukit Lede Pemulu (BTS Telkomsel Lede Pemulu)", "kategori": "Bukit", "deskripsi_geologi": "Puncak tertinggi di areanya yang menjadi titik trigonometri, tersusun atas singkapan batuan keras intrusi atau sedimen terkompaksi.", "aksesibilitas": "Mudah", "formasi": "Tuff dan breksi vulkanik tua", "kondisi": "Area terbuka dengan pemancar BTS", "image_url": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.87203970381019, -10.615157868835759]}, "properties": {"id": 12, "nama_situs": "Pantai Uba Hap'pu", "kategori": "Pantai", "deskripsi_geologi": "Garis pantai dengan jejak abrasi dan pengendapan material pasir kuarsa halus dari hasil pelapukan intrusi batuan asam.", "aksesibilitas": "Sedang", "formasi": "Endapan Kuarter", "kondisi": "Berpasir putih, landai", "image_url": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85347416071562, -10.619652489674644]}, "properties": {"id": 13, "nama_situs": "Pantai Majalla", "kategori": "Pantai", "deskripsi_geologi": "Lingkungan pesisir berkarang dangkal dengan proses sedimentasi laut aktif di sekitar perairan Sabu bagian timur.", "aksesibilitas": "Mudah", "formasi": "Batugamping koral", "kondisi": "Ekosistem intertidal", "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.80351884004523, -10.609411302739156]}, "properties": {"id": 14, "nama_situs": "Kalabba Madja", "kategori": "Bukit", "deskripsi_geologi": "Tebing sedimen erosi menakjubkan dengan gradasi warna warni (merah, cokelat, putih, biru). Hasil pelapukan intensif batuan purba.", "aksesibilitas": "Sedang", "formasi": "Endapan sedimen paleogen tersier.", "kondisi": "Kawasan geowisata dilindungi, potensi erosi lanjutan", "image_url": "https://images.unsplash.com/photo-1549887552-cb1071d3e5ca?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.80351884004523, -10.609411302739156]}, "properties": {"id": 15, "nama_situs": "Pantai Wadumeddi", "kategori": "Pantai", "deskripsi_geologi": "Sektor pantai dengan banyak singkapan batuan ('Wadu' = batu) yang terekspos akibat hantaman ombak konstan.", "aksesibilitas": "Sedang", "formasi": "Kalkarenit dan intrusi basal", "kondisi": "Berbatu karang tajam", "image_url": "https://images.unsplash.com/photo-1495562569060-2eec283d3391?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.91839562215928, -10.579557226135918]}, "properties": {"id": 16, "nama_situs": "Pantai Leokoa", "kategori": "Pantai", "deskripsi_geologi": "Pantai yang diapit oleh struktur batuan tanjung kecil dengan fitur pelarutan karang minor (micro-karstification) pada zona pasang surut.", "aksesibilitas": "Sedang", "formasi": "Batugamping Terumbu Kuarter", "kondisi": "Relatif tersembunyi, gelombang moderat", "image_url": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.96612789701466, -10.441377333242500]}, "properties": {"id": 17, "nama_situs": "Pantai Cemara Jiwuwu", "kategori": "Pantai", "deskripsi_geologi": "Sabuk endapan gosong pasir (sandbar) yang distabilkan oleh vegetasi cemara laut, menjadi barrier alami pesisir.", "aksesibilitas": "Mudah", "formasi": "Endapan pantai dan eolian", "kondisi": "Rimbun, berpasir landai", "image_url": "https://images.unsplash.com/photo-1468413253725-0d5181091126?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [122.0010920975305, -10.44561689336100]}, "properties": {"id": 18, "nama_situs": "Pantai Cemara Nyiuwudu", "kategori": "Pantai", "deskripsi_geologi": "Serupa dengan Jiwuwu, terbentuk dari dinamika suplai sedimen pasang surut yang terjebak oleh barikade vegetasi pantai.", "aksesibilitas": "Mudah", "formasi": "Alluvium / Pasir Pesisir", "kondisi": "Bagus untuk wisata", "image_url": "https://images.unsplash.com/photo-1520116468816-95b69f847357?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.98540016090459, -10.440812311116085]}, "properties": {"id": 19, "nama_situs": "Pantai Langa Ae / Tangga 80", "kategori": "Pantai", "deskripsi_geologi": "Ciri khas tebing curam batugamping (cliff) yang telah diakali aksesnya melalui tangga buatan. Bukti pengangkatan tektonik pulau.", "aksesibilitas": "Sulit", "formasi": "Batugamping Formasi Batuputih terangkat", "kondisi": "Elevasi tinggi ke bibir pantai, waspada jatuh", "image_url": "https://images.unsplash.com/photo-1508003554441-2a14e99f57eb?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.53278366399358, -10.623035378437963]}, "properties": {"id": 20, "nama_situs": "Pantai Wadu Dhere (Kepala Burung)", "kategori": "Pantai", "deskripsi_geologi": "Singkapan Sea Stack batuan menonjol berbentuk kepala burung, sisa pilar erosi akibat abrasi laut konstan pada joint batuan.", "aksesibilitas": "Sedang", "formasi": "Batuan sedimen dan karbonat massif", "kondisi": "Ikonik, abrasi aktif", "image_url": "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.57643068406722, -10.615456154271200]}, "properties": {"id": 21, "nama_situs": "Bukit Lipatan Wata Dagi", "kategori": "Bukit", "deskripsi_geologi": "Bentuk lahan struktural di mana terlihat jelas pola strike-slip dan bidang perlapisan miring lipatan asimetris antiklin Sabu.", "aksesibilitas": "Sulit", "formasi": "Sedimen Tersier (Fm. Sabu/Lutu)", "kondisi": "Lereng terjal, singkapan batuan segar", "image_url": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.83377777777778, -10.484375]}, "properties": {"id": 22, "nama_situs": "Pantai Napae", "kategori": "Pantai", "deskripsi_geologi": "Pesisir utara Sabu dengan dinamika gelombang lebih tenang, menghasilkan rataan terumbu dan endapan lumpur karbonat dangkal.", "aksesibilitas": "Mudah", "formasi": "Endapan holosen", "kondisi": "Pesisir historis (pelabuhan kuno/pendaratan)", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.98695892090235, -10.466074630562600]}, "properties": {"id": 23, "nama_situs": "Desa Adat Kujiratu", "kategori": "Bentang Alam", "deskripsi_geologi": "Permukiman tradisional yang menunjukkan pola adaptasi budaya terhadap kondisi geologi dan geomorfologi setempat.", "aksesibilitas": "Mudah", "formasi": "Dataran bergelombang sedimen Kuarter", "kondisi": "Desa aktif, potensi pariwisata budaya", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.84256944444445, -10.510363888888889]}, "properties": {"id": 24, "nama_situs": "Desa Adat Namata", "kategori": "Bentang Alam", "deskripsi_geologi": "Desa adat dengan nilai historis dan etnografis tinggi, terletak di kawasan bersejarah Sabu.", "aksesibilitas": "Mudah", "formasi": "Sedimen Kuarter", "kondisi": "Pelestarian budaya aktif", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.84076944444445, -10.507659722222222]}, "properties": {"id": 25, "nama_situs": "Benteng Ege", "kategori": "Bentang Alam", "deskripsi_geologi": "Struktur pertahanan tradisional yang berdiri di topografi yang strategis, mencerminkan sejarah geopolitik pulau.", "aksesibilitas": "Sedang", "formasi": "Perbukitan sedimen", "kondisi": "Situs bersejarah dilindungi", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.59261111111111, -10.592888888888889]}, "properties": {"id": 26, "nama_situs": "Desa Adat Nadega", "kategori": "Bentang Alam", "deskripsi_geologi": "Permukiman tradisional di Pulau Raijua yang menunjukkan adaptasi sosial budaya terhadap kondisi geografis pulau kecil.", "aksesibilitas": "Mudah", "formasi": "Batuan karang dan sedimen Kuarter", "kondisi": "Desa adat aktif, akses terbatas", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.56275, -10.56308333333333]}, "properties": {"id": 27, "nama_situs": "Desa Adat Ketita", "kategori": "Bentang Alam", "deskripsi_geologi": "Desa tradisional Raijua dengan pola permukiman yang unik, mencerminkan sistem sosial dan geografis lokal.", "aksesibilitas": "Sedang", "formasi": "Sedimen bergelombang", "kondisi": "Komunitas terjaga, budaya hidup", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.60830555555555, -10.608305555555556]}, "properties": {"id": 28, "nama_situs": "Desa Adat Udju Dima", "kategori": "Bentang Alam", "deskripsi_geologi": "Permukiman di lereng bukit Raijua yang menunjukkan strategi adaptasi terhadap topografi berbukit dan cuaca ekstrem.", "aksesibilitas": "Sedang", "formasi": "Perbukitan batuan purba", "kondisi": "Desa tradisional, akses menanjak", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.55752777777778, -10.557527777777778]}, "properties": {"id": 29, "nama_situs": "Tapak Kaki Madja", "kategori": "Bentang Alam", "deskripsi_geologi": "Situs bersejarah yang mengabadikan momen penting dalam sejarah kepulauan Nusa Tenggara Timur.", "aksesibilitas": "Mudah", "formasi": "Dataran sedimen", "kondisi": "Monumen bersejarah, dirawat", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.61355555555556, -10.614388888888889]}, "properties": {"id": 30, "nama_situs": "Sumur Madja", "kategori": "Bentang Alam", "deskripsi_geologi": "Struktur air tradisional yang menunjukkan pengetahuan lokal tentang hidrogeologi dan manajemen sumber daya air di pulau karang.", "aksesibilitas": "Mudah", "formasi": "Sistem akuifer dalam batu karang", "kondisi": "Sumur bersejarah, masih digunakan", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.52010675874900, -10.632922426392456]}, "properties": {"id": 31, "nama_situs": "Pantai Santigi", "kategori": "Pantai", "deskripsi_geologi": "Pantai Raijua dengan karakteristik geomorfologi pesisir dan proses sedimentasi aktif di wilayah timur laut kepulauan.", "aksesibilitas": "Mudah", "formasi": "Endapan pantai Kuarter", "kondisi": "Pesisir terbuka, landai", "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"}}
   ]
 };
 
-
-// ----------------------------------------------------------------
-// 3. KONFIGURASI WARNA & IKON PER KATEGORI
-//    Tambah kategori baru di sini jika datamu punya lebih banyak
-// ----------------------------------------------------------------
 const CATEGORY_CONFIG = {
-  "Batuan":      { color: "#a78bfa", emoji: "🪨", bg: "rgba(167,139,250,0.2)" },
-  "Air Terjun":  { color: "#00b4ff", emoji: "💧", bg: "rgba(0,180,255,0.2)"   },
-  "Bentang Alam":{ color: "#ff6b35", emoji: "🏔", bg: "rgba(255,107,53,0.2)"  },
+  "Bukit":       { color: "#a78bfa", emoji: "⛰️", bg: "rgba(167,139,250,0.2)" },
+  "Danau":       { color: "#00b4ff", emoji: "💧", bg: "rgba(0,180,255,0.2)"   },
+  "Bentang Alam":{ color: "#ff6b35", emoji: "🏜️", bg: "rgba(255,107,53,0.2)"  },
   "Gua":         { color: "#ffc832", emoji: "🦇", bg: "rgba(255,200,50,0.2)"  },
   "Pantai":      { color: "#00e5b0", emoji: "🌊", bg: "rgba(0,229,176,0.2)"   },
+  "Embung":      { color: "#0ea5e9", emoji: "🏞️", bg: "rgba(14,165,233,0.2)"   },
   "DEFAULT":     { color: "#e8f4f0", emoji: "📍", bg: "rgba(232,244,240,0.2)" },
 };
 
-// ----------------------------------------------------------------
-// 4. AKSESIBILITAS → jumlah dot yang terisi
-// ----------------------------------------------------------------
 const ACC_LEVEL = { "Mudah": 3, "Sedang": 2, "Sulit": 1 };
 
-// ================================================================
-// GLOBAL STATE
-// ================================================================
-let map;                    // Objek Leaflet map
-let layerGroup;             // LayerGroup untuk semua marker
-let allFeatures = [];       // Menyimpan semua fitur GeoJSON
-let activeFilter = "ALL";   // Filter aktif saat ini
-let activeItem  = null;     // Item lokasi yang aktif di sidebar
+let map, layerGroup;
+let allFeatures = [];
+let currentBasemapStr = "dark";
+let markersDict = {};
 
-// ================================================================
-// BASEMAP LAYERS — Tambah/ganti tileset di sini
-// ================================================================
 const BASEMAPS = {
-  dark: L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    {
-      attribution: '© <a href="https://carto.com/">CARTO</a>',
-      maxZoom: 19,
-      subdomains: "abcd"
-    }
-  ),
-  satellite: L.tileLayer(
-    "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
-    {
-      attribution: '© Google Satellite',
-      maxZoom: 20
-    }
-  )
+  dark: L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: '© <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19,
+    subdomains: "abcd"
+  }),
+  satellite: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+    attribution: 'Tiles © Esri',
+    maxZoom: 19
+  })
 };
-let currentBasemap = "dark";
 
-// ================================================================
-// INIT — dijalankan saat DOM siap
-// ================================================================
-document.addEventListener("DOMContentLoaded", () => {
-  initMap();
-  loadGeoJSON();
-
-  // Hide loading setelah semua siap
-  setTimeout(() => {
-    document.getElementById("loading").classList.add("hidden");
-  }, 1800);
-});
-
-/* ---------------------------------------------------------------
-   initMap() — Inisialisasi peta Leaflet
---------------------------------------------------------------- */
 function initMap() {
-  map = L.map("map", {
-    center:         [CONFIG.centerLat, CONFIG.centerLng],
-    zoom:           CONFIG.zoomInit,
-    zoomControl:    false,         // Kita posisikan ulang
-    attributionControl: true,
-  });
+  map = L.map('map', {
+    zoomControl: false,
+    minZoom: 6,
+    maxZoom: 18
+  }).setView([CONFIG.centerLat, CONFIG.centerLng], CONFIG.zoomInit);
 
-  // Pasang basemap awal (dark)
-  BASEMAPS.dark.addTo(map);
-
-  // Pindahkan tombol zoom ke kanan atas
-  L.control.zoom({ position: "topright" }).addTo(map);
-
-  // Layer group untuk marker (agar mudah show/hide)
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+  BASEMAPS[currentBasemapStr].addTo(map);
   layerGroup = L.layerGroup().addTo(map);
 
-  // HUD koordinat — update saat mouse bergerak
-  map.on("mousemove", (e) => {
-    document.getElementById("hud-lat").textContent = e.latlng.lat.toFixed(5);
-    document.getElementById("hud-lng").textContent = e.latlng.lng.toFixed(5);
+  map.on('mousemove', function(e) {
+    document.getElementById('hud-lat').innerText = e.latlng.lat.toFixed(5);
+    document.getElementById('hud-lng').innerText = e.latlng.lng.toFixed(5);
+  });
+
+  loadData();
+}
+
+function loadData() {
+  setTimeout(() => {
+    allFeatures = SAMPLE_GEOJSON.features;
+    renderCategories();
+    renderMarkers("ALL");
+    
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('stat-total').innerText = allFeatures.length;
+  }, 800);
+}
+
+function renderCategories() {
+  const categories = new Set(allFeatures.map(f => f.properties.kategori));
+  const filterContainer = document.getElementById('filter-tags');
+  
+  document.getElementById('stat-cats').innerText = categories.size;
+
+  categories.forEach(cat => {
+    const span = document.createElement('span');
+    span.className = 'filter-tag';
+    span.setAttribute('data-cat', cat);
+    span.innerText = cat;
+    span.onclick = function() { applyFilter(this, cat); };
+    filterContainer.appendChild(span);
   });
 }
 
-/* ---------------------------------------------------------------
-   switchBasemap() — Toggle antara dark dan satellite
---------------------------------------------------------------- */
-function switchBasemap(type) {
-  if (type === currentBasemap) return;
-
-  // Hapus basemap lama, tambah yang baru
-  map.removeLayer(BASEMAPS[currentBasemap]);
-  BASEMAPS[type].addTo(map);
-  BASEMAPS[type].bringToBack();  // Pastikan basemap di paling bawah
-
-  currentBasemap = type;
-
-  // Update tombol aktif
-  document.querySelectorAll(".basemap-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("btn-" + type).classList.add("active");
+function applyFilter(element, category) {
+  document.querySelectorAll('.filter-tag').forEach(el => el.classList.remove('active'));
+  element.classList.add('active');
+  renderMarkers(category);
 }
 
-/* ---------------------------------------------------------------
-   loadGeoJSON() — Load data dari file eksternal atau sample data
---------------------------------------------------------------- */
-async function loadGeoJSON() {
-  let geojsonData;
-
-  if (!CONFIG.useSampleData && CONFIG.geojsonPath) {
-    // Ambil dari file GeoJSON eksternalmu
-    try {
-      const response = await fetch(CONFIG.geojsonPath);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      geojsonData = await response.json();
-      console.log("[GeoWisata] GeoJSON loaded from:", CONFIG.geojsonPath);
-    } catch (err) {
-      console.error("[GeoWisata] Gagal load GeoJSON:", err);
-      console.warn("[GeoWisata] Fallback ke sample data...");
-      geojsonData = SAMPLE_GEOJSON;
-    }
-  } else {
-    // Pakai sample data bawaan
-    geojsonData = SAMPLE_GEOJSON;
-    console.log("[GeoWisata] Menggunakan sample data. Ganti CONFIG.geojsonPath untuk data aslimu.");
-  }
-
-  allFeatures = geojsonData.features;
-  buildFilterTags();  // Buat tombol filter dari data
-  renderFeatures(allFeatures);
-  updateStats(allFeatures.length, allFeatures.length);
-}
-
-/* ---------------------------------------------------------------
-   buildFilterTags() — Generate tombol filter dari kategori unik di data
---------------------------------------------------------------- */
-function buildFilterTags() {
-  // Ambil semua kategori unik
-  const cats = [...new Set(allFeatures.map(f => f.properties.kategori))].filter(Boolean);
-
-  const container = document.getElementById("filter-tags");
-  // Reset (pertahankan tombol "Semua")
-  container.innerHTML = `<span class="filter-tag active" data-cat="ALL" onclick="applyFilter(this)">Semua</span>`;
-
-  cats.forEach(cat => {
-    const cfg   = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG.DEFAULT;
-    const span  = document.createElement("span");
-    span.className    = "filter-tag";
-    span.dataset.cat  = cat;
-    span.textContent  = `${cfg.emoji} ${cat}`;
-    span.onclick      = () => applyFilter(span);
-    container.appendChild(span);
-  });
-
-  // Update stat kategori
-  document.getElementById("stat-cats").textContent = cats.length;
-}
-
-/* ---------------------------------------------------------------
-   applyFilter() — Filter marker berdasarkan kategori
---------------------------------------------------------------- */
-function applyFilter(el) {
-  // Update UI filter tags
-  document.querySelectorAll(".filter-tag").forEach(t => t.classList.remove("active"));
-  el.classList.add("active");
-
-  activeFilter = el.dataset.cat;
-
-  const filtered = activeFilter === "ALL"
-    ? allFeatures
-    : allFeatures.filter(f => f.properties.kategori === activeFilter);
-
-  renderFeatures(filtered);
-  updateStats(allFeatures.length, filtered.length);
-}
-
-/* ---------------------------------------------------------------
-   renderFeatures() — Render marker dan list sidebar dari array features
---------------------------------------------------------------- */
-function renderFeatures(features) {
+function renderMarkers(filterCat) {
   layerGroup.clearLayers();
-  const listEl = document.getElementById("location-list");
-  listEl.innerHTML = "";
+  markersDict = {};
+  
+  const listContainer = document.getElementById('location-list');
+  listContainer.innerHTML = '';
+  
+  let visibleCount = 0;
 
-  features.forEach((feature, idx) => {
+  allFeatures.forEach(feature => {
     const props = feature.properties;
-    const [lng, lat] = feature.geometry.coordinates; // GeoJSON = [lng, lat]!
-    const cfg = CATEGORY_CONFIG[props.kategori] || CATEGORY_CONFIG.DEFAULT;
+    if (filterCat !== "ALL" && props.kategori !== filterCat) return;
+    
+    visibleCount++;
+    const [lng, lat] = feature.geometry.coordinates;
+    const catConf = CATEGORY_CONFIG[props.kategori] || CATEGORY_CONFIG["DEFAULT"];
 
-    // ---- Buat Custom Marker HTML ----
-    const markerHtml = `
-      <div class="geo-marker" style="background:${cfg.bg}; border-color:${cfg.color};">
-        <div class="inner">${cfg.emoji}</div>
-      </div>`;
-
-    const icon = L.divIcon({
-      html: markerHtml,
-      className: "",              // Hapus class default Leaflet
-      iconSize:   [32, 32],
-      iconAnchor: [16, 32],       // Titik anchor di ujung bawah
-      popupAnchor:[0, -34],
+    const iconHtml = `
+      <div class="geo-marker pulse" style="background: ${catConf.bg}; border-color: ${catConf.color}">
+        <div class="inner">${catConf.emoji}</div>
+      </div>
+    `;
+    const customIcon = L.divIcon({
+      className: 'custom-div-icon',
+      html: iconHtml,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
     });
 
-    const marker = L.marker([lat, lng], { icon }).addTo(layerGroup);
-
-    // ---- Bind Rich Popup ----
-    const accLevel  = ACC_LEVEL[props.aksesibilitas] || 2;
-    const accDots   = [1,2,3].map(n =>
-      `<span class="acc-dot ${n <= accLevel ? "filled" : ""}"></span>`
-    ).join("");
+    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(layerGroup);
+    
+    const accLevel = ACC_LEVEL[props.aksesibilitas] || 0;
+    let dots = '';
+    for(let i=0; i<3; i++) {
+      dots += `<div class="acc-dot" style="width:7px;height:7px;border-radius:50%;background:${i < accLevel ? catConf.color : 'rgba(255,255,255,0.1)'}"></div>`;
+    }
 
     const popupHtml = `
       <div class="geo-popup">
         <div class="popup-img-wrap">
-          <img class="popup-img" src="${props.image_url || 'https://via.placeholder.com/280x150'}"
-               alt="${props.nama_situs}"
-               onerror="this.src='https://via.placeholder.com/280x150/1a2535/00e5b0?text=No+Image'" />
-          <div class="popup-cat-badge" style="background:${cfg.bg}; color:${cfg.color}; border:1px solid ${cfg.color}40;">
-            ${cfg.emoji} ${props.kategori}
-          </div>
+          <span class="popup-cat-badge" style="background:${catConf.color}; color:#060b14">${props.kategori}</span>
+          <img src="${props.image_url}" class="popup-img" alt="${props.nama_situs}">
         </div>
         <div class="popup-body">
           <div class="popup-name">${props.nama_situs}</div>
-          <div class="popup-desc">${props.deskripsi_geologi || '–'}</div>
-          <div class="popup-meta">
-            <div class="meta-pill">📐 ${props.formasi || '–'}</div>
-            <div class="meta-pill">🌿 ${props.kondisi || '–'}</div>
-          </div>
-          <div class="popup-footer">
-            <div class="acc-indicator">
-              ${accDots}
-              <span class="acc-label">${props.aksesibilitas}</span>
+          <div class="popup-desc">${props.deskripsi_geologi}</div>
+          
+          <div class="popup-footer" style="display:flex; gap:8px;">
+            <div style="display:flex; gap:4px;">
+              ${dots} <span style="font-size:9px;color:var(--text-muted);margin-left:4px">${props.aksesibilitas}</span>
             </div>
-            <button class="detail-btn" onclick="openModal(${idx}, ${features.indexOf(feature) >= 0 ? features.indexOf(feature) : 0})">
-              Lihat Detail →
-            </button>
+            <button class="detail-btn" onclick='openModalById(${props.id})'>Detail</button>
           </div>
         </div>
-      </div>`;
+      </div>
+    `;
+    marker.bindPopup(popupHtml);
+    markersDict[props.id] = { marker, props, lat, lng };
 
-    marker.bindPopup(popupHtml, {
-      maxWidth: 300,
-      className: "geo-popup-wrap",
-    });
-
-    // Simpan referensi marker ke feature (untuk fly-to dari sidebar)
-    feature._marker = marker;
-    feature._latlng = [lat, lng];
-
-    // ---- Buat Item di Sidebar ----
-    const item = document.createElement("div");
-    item.className  = "loc-item";
-    item.dataset.idx = idx;
-    item.innerHTML  = `
-      <div class="loc-icon" style="background:${cfg.bg};">${cfg.emoji}</div>
+    const listItem = document.createElement('div');
+    listItem.className = 'loc-item';
+    listItem.innerHTML = `
+      <div class="loc-icon" style="background:${catConf.bg}; color:${catConf.color}; border: 1px solid ${catConf.color}">
+        ${catConf.emoji}
+      </div>
       <div class="loc-info">
         <div class="loc-name">${props.nama_situs}</div>
         <div class="loc-meta">
-          <span class="loc-cat" style="background:${cfg.bg}; color:${cfg.color};">${props.kategori}</span>
-          <span class="loc-acc">⚡ ${props.aksesibilitas}</span>
+          <span class="loc-cat" style="background:${catConf.bg}; color:${catConf.color}">${props.kategori}</span>
+          <span class="loc-acc">• ${props.aksesibilitas}</span>
         </div>
       </div>
-      <span class="loc-arrow">›</span>`;
-
-    // Klik item di sidebar → fly-to marker & buka popup
-    item.addEventListener("click", () => {
-      flyToFeature(feature, item);
-    });
-
-    listEl.appendChild(item);
+      <div class="loc-arrow">▶</div>
+    `;
+    
+    listItem.onclick = () => {
+      map.flyTo([lat, lng], CONFIG.zoomFlyTo, { duration: 1.5 });
+      marker.openPopup();
+      
+      document.querySelectorAll('.loc-item').forEach(el => el.classList.remove('active'));
+      listItem.classList.add('active');
+    };
+    
+    listContainer.appendChild(listItem);
   });
 
-  // Update counter list
-  document.getElementById("list-count").textContent = features.length;
+  document.getElementById('stat-visible').innerText = visibleCount;
+  document.getElementById('list-count').innerText = visibleCount;
 }
 
-/* ---------------------------------------------------------------
-   flyToFeature() — Smooth fly-to saat item sidebar diklik
---------------------------------------------------------------- */
-function flyToFeature(feature, listItem) {
-  const [lat, lng] = feature._latlng;
+function switchBasemap(type) {
+  if (type === currentBasemapStr) return;
+  
+  map.removeLayer(BASEMAPS[currentBasemapStr]);
+  BASEMAPS[type].addTo(map);
+  
+  currentBasemapStr = type;
 
-  // Update active state di sidebar
-  if (activeItem) activeItem.classList.remove("active");
-  listItem.classList.add("active");
-  activeItem = listItem;
-
-  // Fly-to dengan animasi halus
-  map.flyTo([lat, lng], CONFIG.zoomFlyTo, {
-    duration: 1.2,        // Durasi animasi (detik)
-    easeLinearity: 0.25,
-  });
-
-  // Buka popup setelah animasi selesai
-  setTimeout(() => {
-    if (feature._marker) feature._marker.openPopup();
-  }, 1300);
+  document.getElementById('btn-dark').classList.remove('active');
+  document.getElementById('btn-satellite').classList.remove('active');
+  document.getElementById(`btn-${type}`).classList.add('active');
 }
 
-/* ---------------------------------------------------------------
-   openModal() — Tampilkan detail modal
---------------------------------------------------------------- */
-function openModal(featureIdxInRendered, originalIdx) {
-  // Cari feature di allFeatures yang sesuai
-  // (kita pakai data dari popup yang dikirim index-nya)
-  const feature = allFeatures.find(f =>
-    f.properties && allFeatures.indexOf(f) === originalIdx
-  ) || allFeatures[originalIdx] || allFeatures[featureIdxInRendered];
-
-  if (!feature) return;
-  const p   = feature.properties;
-  const cfg = CATEGORY_CONFIG[p.kategori] || CATEGORY_CONFIG.DEFAULT;
-  const [lng, lat] = feature.geometry.coordinates;
-
-  document.getElementById("modal-img").src        = p.image_url || "https://via.placeholder.com/460x200";
-  document.getElementById("modal-cat").textContent = `${cfg.emoji} ${p.kategori}`;
-  document.getElementById("modal-cat").style.color = cfg.color;
-  document.getElementById("modal-name").textContent = p.nama_situs;
-  document.getElementById("modal-desc").textContent = p.deskripsi_geologi;
-  document.getElementById("modal-acc").textContent  = p.aksesibilitas;
-  document.getElementById("modal-coords").textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-  document.getElementById("modal-geo").textContent  = p.formasi || "–";
-  document.getElementById("modal-kondisi").textContent = p.kondisi || "–";
-
-  document.getElementById("detail-modal").classList.add("show");
+window.openModalById = function(id) {
+  const data = markersDict[id];
+  if(!data) return;
+  
+  const props = data.props;
+  const lat = data.lat.toFixed(5);
+  const lng = data.lng.toFixed(5);
+  
+  document.getElementById('modal-img').src = props.image_url;
+  document.getElementById('modal-cat').innerText = props.kategori;
+  document.getElementById('modal-name').innerText = props.nama_situs;
+  document.getElementById('modal-desc').innerText = props.deskripsi_geologi;
+  document.getElementById('modal-acc').innerText = props.aksesibilitas;
+  document.getElementById('modal-coords').innerText = `${lat}, ${lng}`;
+  document.getElementById('modal-geo').innerText = props.formasi || '-';
+  document.getElementById('modal-kondisi').innerText = props.kondisi || '-';
+  
+  document.getElementById('detail-modal').classList.add('show');
 }
 
-/* ---------------------------------------------------------------
-   closeModal() — Tutup detail modal
---------------------------------------------------------------- */
-function closeModal(e) {
-  // Hanya tutup jika klik di luar card atau tombol tutup
-  if (e && e.target !== document.getElementById("detail-modal")) return;
-  document.getElementById("detail-modal").classList.remove("show");
+window.closeModalBg = function(e) {
+  if(e.target.id === 'detail-modal') {
+    closeModal();
+  }
 }
 
-/* ---------------------------------------------------------------
-   updateStats() — Update angka di chip stats
---------------------------------------------------------------- */
-function updateStats(total, visible) {
-  document.getElementById("stat-total").textContent   = total;
-  document.getElementById("stat-visible").textContent = visible;
+window.closeModal = function() {
+  document.getElementById('detail-modal').classList.remove('show');
 }
 
-/* ---------------------------------------------------------------
-   Keyboard shortcut — Escape untuk tutup modal
---------------------------------------------------------------- */
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeModal({ target: document.getElementById("detail-modal") });
-});
-
+window.onload = initMap;
 </script>
 </body>
 </html>
