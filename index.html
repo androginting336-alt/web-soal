@@ -253,10 +253,10 @@
     <div class="flex items-center gap-3">
         <!-- 2 Logo Berjejer -->
         <div class="flex items-center gap-2 border-r-2 border-gray-200 pr-3 mr-1">
-            <!-- Logo ITERA -->
-            <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/logo-itera-oke_2_-removebg-preview%20(1).png" alt="Logo ITERA" class="h-10 w-auto object-contain">
+            <!-- PENGGUNAAN LOGO ITERA WIKIMEDIA AGAR PASTI MUNCUL -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Lambang_ITERA.png" alt="Logo ITERA" class="h-10 w-auto object-contain">
             <!-- Logo Geologi ITERA -->
-            <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Logo%20GL_nobg-02%20(1).png" alt="Logo Geologi ITERA" class="h-10 w-auto object-contain border border-gray-200 rounded p-0.5">
+            <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Logo%20GL_nobg-02%20(1).png" alt="Logo Geologi ITERA" class="h-10 w-auto object-contain border border-gray-200 rounded p-0.5" onerror="this.style.display='none'">
         </div>
         
         <!-- Judul Geo Wisata -->
@@ -488,29 +488,39 @@
   </div>
 </div>
 
-<!-- MODAL FAKTA MENARIK EDUKASI (Untuk Kartu di Halaman 2) -->
+<!-- MODAL FAKTA MENARIK EDUKASI (Dirombak Agar Lebar & Bersih) -->
 <div id="info-modal" class="fixed inset-0 z-[6000] hidden items-center justify-center bg-black/70 backdrop-blur-md opacity-0 transition-opacity duration-300" onclick="closeInfoModalBg(event)">
-  <div class="bg-white rounded-2xl w-11/12 max-w-2xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="info-modal-card">
-    <div class="relative h-56 md:h-72 w-full flex-shrink-0">
+  <!-- Desain Lebar (max-w-5xl) dengan tata letak menyamping di layar besar -->
+  <div class="bg-white rounded-3xl w-11/12 max-w-4xl md:max-w-5xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col md:flex-row max-h-[90vh] md:max-h-[80vh]" id="info-modal-card">
+    
+    <!-- Bagian Kiri: Gambar -->
+    <div class="relative w-full md:w-1/2 h-64 md:h-auto flex-shrink-0">
       <img id="info-modal-img" src="" class="w-full h-full object-cover">
-      <div class="absolute top-4 left-4 px-4 py-1.5 rounded-full text-xs font-bold shadow-md bg-white text-gray-800 uppercase tracking-widest" id="info-modal-cat"></div>
-      <button onclick="closeInfoModal()" class="absolute top-4 right-4 bg-white/80 hover:bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg transition-colors">✕</button>
+      <div class="absolute top-6 left-6 px-4 py-1.5 rounded-full text-xs font-bold shadow-md bg-white text-gray-800 uppercase tracking-widest" id="info-modal-cat"></div>
     </div>
-    <div class="p-6 md:p-8 overflow-y-auto">
-      <h3 id="info-modal-title" class="text-2xl md:text-3xl font-bold font-heading mb-4" style="color: #1e3a5f;"></h3>
-      <div class="w-12 h-1 bg-[#f5b041] mb-6 rounded"></div>
-      <p id="info-modal-desc" class="text-gray-700 leading-relaxed text-base md:text-lg text-justify"></p>
+    
+    <!-- Bagian Kanan: Teks & Fakta Menarik -->
+    <div class="p-8 md:p-12 overflow-y-auto flex flex-col justify-center w-full md:w-1/2 relative">
+      <!-- Tombol Close di Pojok Kanan Teks -->
+      <button onclick="closeInfoModal()" class="absolute top-6 right-6 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full w-10 h-10 flex items-center justify-center font-bold shadow transition-colors">✕</button>
+      
+      <h3 id="info-modal-title" class="text-3xl md:text-4xl font-bold font-heading mb-6 pr-10" style="color: #1e3a5f;"></h3>
+      <div class="w-16 h-1.5 bg-[#f5b041] mb-8 rounded"></div>
+      <p id="info-modal-desc" class="text-gray-600 leading-relaxed text-base md:text-lg text-justify"></p>
     </div>
+
   </div>
+</div>
+
 <!-- Footer Global (Muncul di Beranda & Informasi) -->
 <footer id="global-footer" class="py-12 bg-[#1e3a5f] text-white">
     <div class="container mx-auto px-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
         <div class="mb-4 md:mb-0">
             <div class="flex justify-center md:justify-start items-center gap-2 mb-2">
-                <!-- Logo ITERA Footer -->
-                <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/logo-itera-oke_2_-removebg-preview%20(1).png" alt="ITERA" class="h-8 object-contain bg-white rounded p-1">
-                <!-- Logo Geologi Footer -->
-                <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Logo%20GL_nobg-02%20(1).png" alt="Geologi" class="h-8 object-contain bg-white rounded p-1">
+                <!-- Logo ITERA Wikimedia -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Lambang_ITERA.png" alt="ITERA" class="h-8 object-contain bg-white rounded p-1">
+                <!-- Logo Geologi -->
+                <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Logo%20GL_nobg-02%20(1).png" alt="Geologi" class="h-8 object-contain bg-white rounded p-1" onerror="this.style.display='none'">
             </div>
             <h2 class="text-xl font-bold tracking-widest uppercase font-heading">Geo Edu Wisata</h2>
             <p class="text-gray-300 text-xs mt-1">Platform Pemetaan Edukatif Sabu Raijua</p>
@@ -757,12 +767,12 @@ function toggleCategory(contentId, iconId) {
     const icon = document.getElementById(iconId);
     if (content.classList.contains('hidden')) {
         content.classList.remove('hidden');
-        content.classList.add('animate-fadeIn');
+        content.classList.add('animate-slideDown');
         icon.style.transform = 'rotate(180deg)';
         icon.classList.add('bg-white', 'text-[#1e3a5f]');
     } else {
         content.classList.add('hidden');
-        content.classList.remove('animate-fadeIn');
+        content.classList.remove('animate-slideDown');
         icon.style.transform = 'rotate(0deg)';
         icon.classList.remove('bg-white', 'text-[#1e3a5f]');
     }
@@ -775,10 +785,13 @@ function openInfoModal(id) {
     document.getElementById('info-modal-title').innerText = data.title;
     document.getElementById('info-modal-desc').innerHTML = data.desc;
     document.getElementById('info-modal-img').src = data.img;
+    
+    // Terapkan label kategori
     document.getElementById('info-modal-cat').innerText = data.cat;
 
     const modal = document.getElementById('info-modal');
     modal.classList.remove('hidden');
+    // timeout sangat singkat untuk trigger CSS transform
     setTimeout(() => {
         modal.classList.remove('opacity-0');
         document.getElementById('info-modal-card').classList.remove('scale-95');
@@ -793,18 +806,6 @@ function closeInfoModal() {
 }
 
 function closeInfoModalBg(e) { if (e.target.id === 'info-modal') closeInfoModal(); }
-
-// Fungsi Navigasi SPA
-function navigateTo(pageId, linkElement) {
-  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('active', 'text-yellow-500'); l.classList.add('text-gray-600'); });
-  if (linkElement) { linkElement.classList.remove('text-gray-600'); linkElement.classList.add('active', 'text-yellow-500'); }
-  if (pageId === 'page-webgis' && window.map) { setTimeout(() => { map.invalidateSize(); }, 100); }
-  const footer = document.getElementById('global-footer');
-  if(footer) { footer.style.display = (pageId === 'page-webgis') ? 'none' : 'block'; }
-  window.scrollTo(0, 0);
-}
 </script>
 
 </body>
