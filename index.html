@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   
-  <!-- Fonts (Kombinasi untuk Tema Terang dan Tema Peta Gelap) -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
@@ -27,10 +27,10 @@
 
     h1, h2, h3, h4, .font-heading {
       font-family: 'Montserrat', sans-serif;
-      color: #1e3a5f; /* Biru Tua */
+      color: #1e3a5f;
     }
 
-    .accent-color { color: #f5b041; } /* Kuning */
+    .accent-color { color: #f5b041; }
     .bg-accent-color { background-color: #f5b041; }
     
     .nav-link { transition: all 0.3s ease; position: relative; }
@@ -41,12 +41,10 @@
     .nav-link:hover::after, .nav-link.active::after { width: 100%; }
     .nav-link.active { color: #f5b041; }
 
-    /* SPA System (Menyembunyikan halaman yang tidak aktif) */
     .page-section { display: none; animation: fadeIn 0.4s ease; }
     .page-section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Animasi Buka Tutup Kategori Informasi */
     @keyframes slideDownFade {
         from { opacity: 0; transform: translateY(-20px); }
         to { opacity: 1; transform: translateY(0); }
@@ -62,7 +60,7 @@
     #page-webgis {
       position: relative;
       width: 100vw;
-      height: calc(100vh - 80px); /* 80px adalah tinggi navbar baru */
+      height: calc(100vh - 80px);
       overflow: hidden;
       background: #060b14;
       color: #e8f4f0;
@@ -158,17 +156,8 @@
     #page-webgis .leaflet-popup-close-button { color: var(--text-muted) !important; font-size: 18px !important; top: 10px !important; right: 12px !important; z-index: 10; }
     #page-webgis .leaflet-popup-close-button:hover { color: var(--accent) !important; }
 
-    #page-webgis .geo-popup { width: 280px; background: rgba(8, 14, 24, 0.92); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: var(--radius); overflow: hidden; font-family: var(--font-mono); }
-    #page-webgis .geo-popup .popup-img { width: 100%; height: 150px; object-fit: cover; display: block; }
-    #page-webgis .geo-popup .popup-img-wrap { position: relative; }
-    #page-webgis .geo-popup .popup-img-wrap::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(transparent, rgba(8,14,24,0.9)); }
-    #page-webgis .geo-popup .popup-cat-badge { position: absolute; top: 10px; left: 10px; padding: 3px 10px; border-radius: 4px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; z-index: 2; }
-    #page-webgis .popup-body { padding: 14px 16px; color: var(--text-primary); }
-    #page-webgis .popup-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
-    #page-webgis .popup-desc { font-size: 10px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    #page-webgis .popup-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--glass-border); padding-top: 10px; }
-    #page-webgis .detail-btn { padding: 6px 14px; border-radius: 6px; background: rgba(0,229,176,0.12); border: 1px solid var(--accent); color: var(--accent); font-family: var(--font-mono); font-size: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px; }
-    #page-webgis .detail-btn:hover { background: var(--accent); color: #060b14; }
+    #page-webgis .geo-popup { width: 250px; background: rgba(8, 14, 24, 0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: var(--radius); overflow: hidden; font-family: var(--font-mono); }
+    #page-webgis .popup-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; color: var(--text-primary); }
 
     #page-webgis .geo-marker { width: 32px; height: 32px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 4px 14px rgba(0,0,0,0.5); transition: transform 0.2s; }
     #page-webgis .geo-marker:hover { transform: rotate(-45deg) scale(1.15); }
@@ -176,21 +165,6 @@
 
     @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(2.2); opacity: 0; } }
     #page-webgis .geo-marker.pulse::after { content: ''; position: absolute; inset: 0; border-radius: 50% 50% 50% 0; border: 2px solid var(--accent); animation: pulse-ring 1.4s ease-out infinite; }
-
-    #detail-modal { position: fixed; inset: 0; z-index: 5000; display: flex; align-items: center; justify-content: center; background: rgba(6, 11, 20, 0.7); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-    #detail-modal.show { opacity: 1; pointer-events: all; }
-    #detail-modal .modal-card { width: 460px; max-width: 90vw; background: rgba(10, 16, 28, 0.95); border: 1px solid var(--glass-border); border-radius: var(--radius); overflow: hidden; transform: translateY(20px); transition: transform 0.3s ease; font-family: var(--font-mono); max-height: 90vh; overflow-y: auto; color: var(--text-primary); }
-    #detail-modal.show .modal-card { transform: translateY(0); }
-    #detail-modal .modal-img { width: 100%; height: 200px; object-fit: cover; display: block; }
-    #detail-modal .modal-body { padding: 20px 24px 24px; }
-    #detail-modal .modal-cat { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
-    #detail-modal .modal-name { font-family: var(--font-display); font-size: 22px; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
-    #detail-modal .modal-desc { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; }
-    #detail-modal .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-    #detail-modal .modal-field label { font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 3px; }
-    #detail-modal .modal-field .val { font-size: 12px; word-break: break-word; }
-    #detail-modal .modal-close-btn { width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,229,176,0.08); border: 1px solid var(--glass-border); color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; cursor: pointer; transition: all 0.2s; }
-    #detail-modal .modal-close-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     @media (max-width: 768px) {
       #page-webgis { --sidebar-w: calc(100vw - 32px); }
@@ -200,7 +174,7 @@
     }
   </style>
 
-  <!-- FUNGSI UNTUK PINDAH HALAMAN (SPA) & TOGGLE AKORDEON -->
+  <!-- Skrip Pengatur Navigasi Halaman -->
   <script>
     function navigateTo(pageId, linkElement) {
       document.querySelectorAll('.page-section').forEach(section => {
@@ -253,8 +227,8 @@
     <div class="flex items-center gap-3">
         <!-- 2 Logo Berjejer -->
         <div class="flex items-center gap-2 border-r-2 border-gray-200 pr-3 mr-1">
-            <!-- PENGGUNAAN LOGO ITERA WIKIMEDIA AGAR PASTI MUNCUL -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Lambang_ITERA.png" alt="Logo ITERA" class="h-10 w-auto object-contain">
+            <!-- Logo ITERA -->
+            <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/logo-itera-oke.jpg" alt="Logo ITERA" class="h-10 w-auto object-contain" onerror="this.style.display='none'">
             <!-- Logo Geologi ITERA -->
             <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Logo%20GL_nobg-02%20(1).png" alt="Logo Geologi ITERA" class="h-10 w-auto object-contain border border-gray-200 rounded p-0.5" onerror="this.style.display='none'">
         </div>
@@ -279,8 +253,8 @@
 <div id="page-beranda" class="page-section active">
     <!-- Hero Section -->
     <section class="relative w-full h-[85vh] flex flex-col items-center justify-center text-center bg-cover bg-center" 
-             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1544526226-d4568090ffb8?auto=format&fit=crop&w=1920&q=80');">
-        <div class="max-w-4xl px-4 z-10">
+             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Bagi%20%23SobatJalan%20yang%20suka%20berpetualang%20melihat….jpeg');">
+        <div class="max-w-4xl px-4 z-10 relative">
             <h1 class="text-white text-4xl md:text-7xl font-bold font-heading mb-6 tracking-wide drop-shadow-lg">
                 Sistem Geospasial Sabu Raijua
             </h1>
@@ -294,7 +268,114 @@
         </div>
     </section>
 
-    <section class="pt-24 pb-24 px-6 bg-white text-center">
+    <!-- Carousel Destinasi Populer Lengkap 14 Gambar -->
+    <section class="pt-24 px-6 bg-white text-center">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-heading font-bold mb-4" style="color: #1b365d;">Destinasi Wisata Populer</h2>
+            <div class="h-1.5 w-20 bg-accent-color mx-auto rounded mb-10"></div>
+
+            <!-- Kontainer Gambar Geser Samping -->
+            <div id="destinasi-carousel" class="flex overflow-x-auto gap-6 pb-8 hide-scrollbar snap-x snap-mandatory scroll-smooth">
+                <!-- GEO -->
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Bagi%20%23SobatJalan%20yang%20suka%20berpetualang%20melihat….jpeg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Kalabba Madja</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/bukit%20.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Bukit Lipatan Wata Dagi</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Pantai%20Rae%20Mea-Sabu%20(9).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Pantai Raemea</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/goa.png" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Goa Lie Madira</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/danaul.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Danau Porohohu</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/embung.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Embung Guriola</h3>
+                    </div>
+                </div>
+
+                <!-- BIO -->
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/kepu.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Ekosistem Mangrove</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/kerang.JPEG" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Kerang Tridacna</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/lontar.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Pohon Lontar</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/rumput%20laut.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Budidaya Rumput Laut</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/sorgum.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Lahan Sorgum</h3>
+                    </div>
+                </div>
+
+                <!-- CULTURAL -->
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/tenun.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Kesenian Tenun Ikat</h3>
+                    </div>
+                </div>
+                 <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/salam%20sabu.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Tradisi Salam Sabu</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/pacuankuda.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Pacuan Kuda</h3>
+                    </div>
+                </div>
+                <div class="min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] rounded-2xl overflow-hidden shadow-lg snap-center relative group flex-shrink-0 cursor-pointer" onclick="navigateTo('page-informasi', document.getElementById('nav-informasi'))">
+                    <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/sabung%20ayam.jpeg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#1e3a5f]/90 via-[#1e3a5f]/30 to-transparent flex items-end p-6">
+                        <h3 class="text-white text-xl md:text-2xl font-bold font-heading">Sabung Ayam Adat</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pt-16 pb-24 px-6 bg-white text-center">
         <div class="max-w-5xl mx-auto">
             <h2 class="text-3xl md:text-4xl font-heading font-bold mb-4" style="color: #1b365d;">Tentang Geo-Eduwisata</h2>
             <div class="h-1.5 w-20 bg-accent-color mx-auto rounded mb-8"></div>
@@ -334,22 +415,33 @@
                 </div>
             </div>
             
-            <!-- Kartu Destinasi (Tersembunyi Awalnya) -->
+            <!-- Kartu Destinasi -->
             <div id="geo-content" class="hidden mt-8">
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-yellow-400 group" onclick="openInfoModal('wata_dagi')">
-                        <h5 class="text-xl font-bold text-[#1b365d] mb-2 group-hover:text-yellow-600 transition-colors">Bukit Lipatan Wata Dagi</h5>
-                        <p class="text-sm text-gray-600 line-clamp-3">Menampilkan struktur geologi berupa lipatan batuan yang masif, menjadi laboratorium alam bagi para peneliti geografi.</p>
-                        <div class="mt-4 text-xs font-bold text-yellow-500 flex items-center gap-1">
-                            <span class="bg-yellow-100 px-3 py-1 rounded-full">Lihat Fakta Menarik</span>
-                        </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-yellow-400 group" onclick="openInfoModal('kalabba')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-yellow-600 transition-colors">Kalabba Madja</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Tebing sedimen purba dengan gradasi warna spektakuler yang terbentuk dari proses oksidasi mineral.</p>
+                        <div class="mt-4 text-[10px] font-bold text-yellow-500"><span class="bg-yellow-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-yellow-400 group" onclick="openInfoModal('pantai')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-yellow-600 transition-colors">Pantai Raemea</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Hamparan pasir putih halus yang diapit oleh tebing escarpment kokoh, jejak tektonik masa lalu.</p>
+                        <div class="mt-4 text-[10px] font-bold text-yellow-500"><span class="bg-yellow-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-yellow-400 group" onclick="openInfoModal('goa')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-yellow-600 transition-colors">Goa Lie Madira</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Goa eksokarst dengan pemandangan stalaktit yang terbentuk dari proses karstifikasi batuan gamping.</p>
+                        <div class="mt-4 text-[10px] font-bold text-yellow-500"><span class="bg-yellow-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-yellow-400 group" onclick="openInfoModal('danau')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-yellow-600 transition-colors">Danau Porohohu</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Sebuah cekungan alami di tengah ekosistem karang yang secara ajaib menampung air tawar.</p>
+                        <div class="mt-4 text-[10px] font-bold text-yellow-500"><span class="bg-yellow-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
                     </div>
                     <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-yellow-400 group" onclick="openInfoModal('embung')">
-                        <h5 class="text-xl font-bold text-[#1b365d] mb-2 group-hover:text-yellow-600 transition-colors">Embung Guriola</h5>
-                        <p class="text-sm text-gray-600 line-clamp-3">Daerah tangkapan air buatan (embung) yang memanfaatkan cekungan geomorfologi batuan dasar kedap air di wilayah Sabu.</p>
-                        <div class="mt-4 text-xs font-bold text-yellow-500 flex items-center gap-1">
-                            <span class="bg-yellow-100 px-3 py-1 rounded-full">Lihat Fakta Menarik</span>
-                        </div>
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-yellow-600 transition-colors">Embung Guriola</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Daerah tangkapan air buatan yang memanfaatkan cekungan geomorfologi batuan kedap air.</p>
+                        <div class="mt-4 text-[10px] font-bold text-yellow-500"><span class="bg-yellow-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
                     </div>
                 </div>
             </div>
@@ -368,20 +460,31 @@
             </div>
             
             <div id="bio-content" class="hidden mt-8">
-                <div class="grid md:grid-cols-2 gap-8">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-green-400 group" onclick="openInfoModal('mangrove')">
-                        <h5 class="text-xl font-bold text-[#1b365d] mb-2 group-hover:text-green-600 transition-colors">Ekosistem Mangrove Kepu</h5>
-                        <p class="text-sm text-gray-600 line-clamp-3">Kawasan mangrove yang menjadi benteng alami pesisir sekaligus habitat fauna laut dan burung migran.</p>
-                        <div class="mt-4 text-xs font-bold text-green-500 flex items-center gap-1">
-                            <span class="bg-green-100 px-3 py-1 rounded-full">Lihat Fakta Menarik</span>
-                        </div>
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-green-600 transition-colors">Ekosistem Mangrove Kepu</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Kawasan mangrove yang menjadi benteng alami pesisir sekaligus habitat fauna laut dan burung migran.</p>
+                        <div class="mt-4 text-[10px] font-bold text-green-500"><span class="bg-green-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
                     </div>
                     <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-green-400 group" onclick="openInfoModal('tridacna')">
-                        <h5 class="text-xl font-bold text-[#1b365d] mb-2 group-hover:text-green-600 transition-colors">Budidaya Kerang Tridacna</h5>
-                        <p class="text-sm text-gray-600 line-clamp-3">Keberagaman biota laut, khususnya perlindungan spesies Kerang Raksasa di perairan Sabu.</p>
-                        <div class="mt-4 text-xs font-bold text-green-500 flex items-center gap-1">
-                            <span class="bg-green-100 px-3 py-1 rounded-full">Lihat Fakta Menarik</span>
-                        </div>
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-green-600 transition-colors">Budidaya Kerang Tridacna</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Keberagaman biota laut, khususnya perlindungan spesies Kerang Raksasa di perairan Sabu.</p>
+                        <div class="mt-4 text-[10px] font-bold text-green-500"><span class="bg-green-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-green-400 group" onclick="openInfoModal('lontar')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-green-600 transition-colors">Pohon Lontar</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Pohon endemik yang menjadi sumber kehidupan dan ketahanan pangan utama di Sabu Raijua.</p>
+                        <div class="mt-4 text-[10px] font-bold text-green-500"><span class="bg-green-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-green-400 group" onclick="openInfoModal('rumputlaut')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-green-600 transition-colors">Budidaya Rumput Laut</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Pemanfaatan perairan dangkal yang bersih untuk budidaya makroalga bernilai ekonomi tinggi.</p>
+                        <div class="mt-4 text-[10px] font-bold text-green-500"><span class="bg-green-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-green-400 group" onclick="openInfoModal('sorgum')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-green-600 transition-colors">Perkebunan Sorgum</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Tanaman serealia lokal yang sangat tangguh menghadapi iklim semi-arid yang ekstrem.</p>
+                        <div class="mt-4 text-[10px] font-bold text-green-500"><span class="bg-green-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
                     </div>
                 </div>
             </div>
@@ -400,20 +503,26 @@
             </div>
             
             <div id="cul-content" class="hidden mt-8">
-                <div class="grid md:grid-cols-2 gap-8">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-red-400 group" onclick="openInfoModal('tenun')">
-                        <h5 class="text-xl font-bold text-[#1b365d] mb-2 group-hover:text-red-600 transition-colors">Kesenian Tenun Ikat</h5>
-                        <p class="text-sm text-gray-600 line-clamp-3">Motif geometris pada tenun yang mengandung filosofi mendalam tentang tatanan kosmos leluhur.</p>
-                        <div class="mt-4 text-xs font-bold text-red-500 flex items-center gap-1">
-                            <span class="bg-red-100 px-3 py-1 rounded-full">Lihat Fakta Menarik</span>
-                        </div>
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-red-600 transition-colors">Kesenian Tenun Ikat</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Motif geometris pada tenun yang mengandung filosofi mendalam tentang tatanan kosmos leluhur.</p>
+                        <div class="mt-4 text-[10px] font-bold text-red-500"><span class="bg-red-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
                     </div>
                     <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-red-400 group" onclick="openInfoModal('salam')">
-                        <h5 class="text-xl font-bold text-[#1b365d] mb-2 group-hover:text-red-600 transition-colors">Tradisi Salam Sabu</h5>
-                        <p class="text-sm text-gray-600 line-clamp-3">Tradisi unik bersentuhan hidung (Henge'do) yang melambangkan persaudaraan, penghormatan, dan ikatan kekeluargaan yang erat.</p>
-                        <div class="mt-4 text-xs font-bold text-red-500 flex items-center gap-1">
-                            <span class="bg-red-100 px-3 py-1 rounded-full">Lihat Fakta Menarik</span>
-                        </div>
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-red-600 transition-colors">Tradisi Salam Sabu</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Tradisi unik bersentuhan hidung (Henge'do) yang melambangkan persaudaraan dan ikatan erat.</p>
+                        <div class="mt-4 text-[10px] font-bold text-red-500"><span class="bg-red-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-red-400 group" onclick="openInfoModal('pacuankuda')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-red-600 transition-colors">Pacuan Kuda Tradisional</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Festival budaya dan ketangkasan berkuda yang menjadi ikon pariwisata daerah selepas panen.</p>
+                        <div class="mt-4 text-[10px] font-bold text-red-500"><span class="bg-red-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 hover:-translate-y-2 transition cursor-pointer hover:shadow-xl border border-transparent hover:border-red-400 group" onclick="openInfoModal('sabungayam')">
+                        <h5 class="text-lg font-bold text-[#1b365d] mb-2 group-hover:text-red-600 transition-colors">Sabung Ayam Adat</h5>
+                        <p class="text-xs text-gray-600 line-clamp-3">Ritual kepercayaan Jingitiu untuk menjaga keseimbangan kosmis dan meminta restu alam.</p>
+                        <div class="mt-4 text-[10px] font-bold text-red-500"><span class="bg-red-100 px-3 py-1 rounded-full">Fakta Menarik</span></div>
                     </div>
                 </div>
             </div>
@@ -470,7 +579,7 @@
 </div>
 
 <!-- MODAL POPUP PETA (Hanya muncul saat Peta aktif) -->
-<div id="detail-modal" class="map-layer" onclick="closeModalBg(event)">
+<div id="detail-modal" class="map-layer" onclick="closeModalBg(event)" style="position: fixed; inset: 0; z-index: 5000; display: none; align-items: center; justify-content: center; background: rgba(6, 11, 20, 0.7); backdrop-filter: blur(6px);">
   <div class="modal-card">
     <img class="modal-img" id="modal-img" src="" alt="" />
     <div class="modal-body">
@@ -488,45 +597,43 @@
   </div>
 </div>
 
-<!-- MODAL FAKTA MENARIK EDUKASI (Dirombak Agar Lebar & Bersih) -->
-<div id="info-modal" class="fixed inset-0 z-[6000] hidden items-center justify-center bg-black/70 backdrop-blur-md opacity-0 transition-opacity duration-300" onclick="closeInfoModalBg(event)">
-  <!-- Desain Lebar (max-w-5xl) dengan tata letak menyamping di layar besar -->
-  <div class="bg-white rounded-3xl w-11/12 max-w-4xl md:max-w-5xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col md:flex-row max-h-[90vh] md:max-h-[80vh]" id="info-modal-card">
+<!-- MODAL FAKTA MENARIK EDUKASI (Presisi Di Tengah, Desain Elegan) -->
+<div id="info-modal" class="fixed inset-0 z-[6000] items-center justify-center bg-black/70 backdrop-blur-md opacity-0 transition-opacity duration-300 p-4 sm:p-6" style="display: none;" onclick="closeInfoModalBg(event)">
+  <div class="bg-white rounded-2xl w-full max-w-4xl shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col md:flex-row overflow-hidden max-h-[90vh] mx-auto" id="info-modal-card" onclick="event.stopPropagation()">
     
     <!-- Bagian Kiri: Gambar -->
-    <div class="relative w-full md:w-1/2 h-64 md:h-auto flex-shrink-0">
-      <img id="info-modal-img" src="" class="w-full h-full object-cover">
-      <div class="absolute top-6 left-6 px-4 py-1.5 rounded-full text-xs font-bold shadow-md bg-white text-gray-800 uppercase tracking-widest" id="info-modal-cat"></div>
+    <div class="relative w-full md:w-1/2 min-h-[250px] md:min-h-[400px] flex-shrink-0 bg-gray-100">
+      <img id="info-modal-img" src="" class="absolute inset-0 w-full h-full object-cover">
+      <div class="absolute top-4 left-4 px-4 py-1.5 rounded-full text-xs font-bold shadow-md bg-white text-gray-800 uppercase tracking-widest" id="info-modal-cat"></div>
     </div>
     
     <!-- Bagian Kanan: Teks & Fakta Menarik -->
-    <div class="p-8 md:p-12 overflow-y-auto flex flex-col justify-center w-full md:w-1/2 relative">
-      <!-- Tombol Close di Pojok Kanan Teks -->
-      <button onclick="closeInfoModal()" class="absolute top-6 right-6 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full w-10 h-10 flex items-center justify-center font-bold shadow transition-colors">✕</button>
+    <div class="w-full md:w-1/2 p-6 md:p-10 overflow-y-auto relative flex flex-col bg-white">
+      <button onclick="closeInfoModal()" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full w-8 h-8 flex items-center justify-center font-bold shadow transition-colors z-10">✕</button>
       
-      <h3 id="info-modal-title" class="text-3xl md:text-4xl font-bold font-heading mb-6 pr-10" style="color: #1e3a5f;"></h3>
-      <div class="w-16 h-1.5 bg-[#f5b041] mb-8 rounded"></div>
-      <p id="info-modal-desc" class="text-gray-600 leading-relaxed text-base md:text-lg text-justify"></p>
+      <h3 id="info-modal-title" class="text-2xl md:text-3xl font-bold font-heading mb-4 pr-8 text-[#1e3a5f]"></h3>
+      <div class="w-16 h-1 bg-[#f5b041] mb-6 rounded flex-shrink-0"></div>
+      <p id="info-modal-desc" class="text-gray-700 leading-relaxed text-sm md:text-base text-justify"></p>
     </div>
 
   </div>
 </div>
 
-<!-- Footer Global (Muncul di Beranda & Informasi) -->
+<!-- Footer Global -->
 <footer id="global-footer" class="py-12 bg-[#1e3a5f] text-white">
     <div class="container mx-auto px-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
         <div class="mb-4 md:mb-0">
             <div class="flex justify-center md:justify-start items-center gap-2 mb-2">
-                <!-- Logo ITERA Wikimedia -->
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Lambang_ITERA.png" alt="ITERA" class="h-8 object-contain bg-white rounded p-1">
-                <!-- Logo Geologi -->
+                <!-- Logo ITERA Footer -->
+                <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/logo-itera-oke.jpg" alt="ITERA" class="h-8 object-contain bg-white rounded p-1" onerror="this.style.display='none'">
+                <!-- Logo Geologi Footer -->
                 <img src="https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Logo%20GL_nobg-02%20(1).png" alt="Geologi" class="h-8 object-contain bg-white rounded p-1" onerror="this.style.display='none'">
             </div>
             <h2 class="text-xl font-bold tracking-widest uppercase font-heading">Geo Edu Wisata</h2>
             <p class="text-gray-300 text-xs mt-1">Platform Pemetaan Edukatif Sabu Raijua</p>
         </div>
         <div class="text-xs text-gray-400">
-            © 2024 Ekspedisi Geografi. All Rights Reserved.
+            © 2026 Kelompok 13 Capstone. All Rights Reserved.
         </div>
     </div>
 </footer>
@@ -540,37 +647,37 @@ const CONFIG = { centerLat: -10.5500, centerLng: 121.8500, zoomInit: 11, zoomFly
 const GEO_DATA = {
   "type": "FeatureCollection",
   "features": [
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.99320, -10.49738]}, "properties": {"id": 1, "nama_situs": "Pantai Raemea", "kategori": "Pantai", "deskripsi_geologi": "Morfologi pantai sempit yang berbatasan dengan tebing. Terdapat gugusan terumbu karang.", "aksesibilitas": "Sedang", "formasi": "Batugamping terumbu Kuarter (Qa)", "kondisi": "Potensi longsor tebing", "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.73847, -10.59033]}, "properties": {"id": 2, "nama_situs": "Bukit Lobohede", "kategori": "Bukit", "deskripsi_geologi": "Perbukitan struktural terdenudasi dengan singkapan Formasi Batuputih.", "aksesibilitas": "Sedang", "formasi": "Formasi Batuputih", "kondisi": "Rawan longsor lereng terjal", "image_url": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.69236, -10.58281]}, "properties": {"id": 3, "nama_situs": "Pantai Bodo", "kategori": "Pantai", "deskripsi_geologi": "Endapan alluvium serta singkapan batugamping koral.", "aksesibilitas": "Mudah", "formasi": "Endapan Pantai", "kondisi": "Aman, landai", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.68667, -10.57899]}, "properties": {"id": 4, "nama_situs": "Danau Porohohu", "kategori": "Danau", "deskripsi_geologi": "Cekungan geomorfologi air tawar di area pulau karang.", "aksesibilitas": "Mudah", "formasi": "Cekungan struktur", "kondisi": "Fluktuasi musiman", "image_url": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.74071, -10.54776]}, "properties": {"id": 5, "nama_situs": "Goa Lie Madira", "kategori": "Gua", "deskripsi_geologi": "Gua eksokarst alami dari pelarutan batuan karbonat.", "aksesibilitas": "Sedang", "formasi": "Formasi Sabu", "kondisi": "Alami, licin", "image_url": "https://images.unsplash.com/photo-1499566727020-881adcd902cc?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.71658, -10.55768]}, "properties": {"id": 6, "nama_situs": "Pantai Molie", "kategori": "Pantai", "deskripsi_geologi": "Karakteristik ombak besar berhadapan dengan Samudera Hindia.", "aksesibilitas": "Sedang", "formasi": "Material Vulkanik", "kondisi": "Arus kuat", "image_url": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.88415, -10.44511]}, "properties": {"id": 7, "nama_situs": "Mata Air Ei Madabubu", "kategori": "Danau", "deskripsi_geologi": "Mata air kontak batuan permeabel dan kedap air.", "aksesibilitas": "Mudah", "formasi": "Akuifer Formasi Lutu", "kondisi": "Debit stabil", "image_url": "https://images.unsplash.com/photo-1437482078695-73f5af6e68fd?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.8890, -10.5360]}, "properties": {"id": 8, "nama_situs": "Goa Lie Mabala", "kategori": "Gua", "deskripsi_geologi": "Gua karst dengan ornamen stalaktit dan stalagmit.", "aksesibilitas": "Sulit", "formasi": "Batugamping Karst", "kondisi": "Gelap, perlu guide", "image_url": "https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85175, -10.54320]}, "properties": {"id": 9, "nama_situs": "Embung Guriola", "kategori": "Embung", "deskripsi_geologi": "Tangkapan air buatan pada cekungan batuan kedap air.", "aksesibilitas": "Mudah", "formasi": "Sedimen Kuarter", "kondisi": "Terawat", "image_url": "https://images.unsplash.com/photo-1543085601-5231c26b6f79?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85705, -10.58907]}, "properties": {"id": 10, "nama_situs": "Bukit Lipatan Eiowu", "kategori": "Bukit", "deskripsi_geologi": "Manifestasi proses deformasi struktur lipatan tektonik.", "aksesibilitas": "Sedang", "formasi": "Sedimen Tersier", "kondisi": "Terbuka", "image_url": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.87256, -10.57558]}, "properties": {"id": 11, "nama_situs": "Bukit Lede Pemulu", "kategori": "Bukit", "deskripsi_geologi": "Puncak tertinggi dengan singkapan tuff dan breksi.", "aksesibilitas": "Mudah", "formasi": "Tuff Vulkanik", "kondisi": "Area BTS", "image_url": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.87203, -10.61515]}, "properties": {"id": 12, "nama_situs": "Pantai Uba Hap'pu", "kategori": "Pantai", "deskripsi_geologi": "Jejak abrasi dan pengendapan pasir kuarsa halus.", "aksesibilitas": "Sedang", "formasi": "Endapan Kuarter", "kondisi": "Landai", "image_url": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85347, -10.61965]}, "properties": {"id": 13, "nama_situs": "Pantai Majalla", "kategori": "Pantai", "deskripsi_geologi": "Lingkungan pesisir berkarang dangkal dengan sedimentasi aktif.", "aksesibilitas": "Mudah", "formasi": "Batugamping Koral", "kondisi": "Aman", "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.80351, -10.60941]}, "properties": {"id": 14, "nama_situs": "Kalabba Madja", "kategori": "Bentang Alam", "deskripsi_geologi": "Tebing sedimen warna-warni hasil pelapukan intensif.", "aksesibilitas": "Sedang", "formasi": "Paleogen Tersier", "kondisi": "Ikonik, Wisata Unggulan", "image_url": "https://images.unsplash.com/photo-1549887552-cb1071d3e5ca?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.81000, -10.61500]}, "properties": {"id": 15, "nama_situs": "Pantai Wadumeddi", "kategori": "Pantai", "deskripsi_geologi": "Singkapan batuan terekspos akibat hantaman ombak.", "aksesibilitas": "Sedang", "formasi": "Kalkarenit", "kondisi": "Berbatu tajam", "image_url": "https://images.unsplash.com/photo-1495562569060-2eec283d3391?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.91839, -10.57955]}, "properties": {"id": 16, "nama_situs": "Pantai Leokoa", "kategori": "Pantai", "deskripsi_geologi": "Tanjung kecil dengan fitur micro-karstification.", "aksesibilitas": "Sedang", "formasi": "Batugamping Terumbu", "kondisi": "Tersembunyi", "image_url": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.96612, -10.44137]}, "properties": {"id": 17, "nama_situs": "Pantai Cemara Jiwuwu", "kategori": "Pantai", "deskripsi_geologi": "Sandbar yang distabilkan oleh vegetasi cemara laut.", "aksesibilitas": "Mudah", "formasi": "Endapan Eolian", "kondisi": "Landai", "image_url": "https://images.unsplash.com/photo-1468413253725-0d5181091126?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [122.00109, -10.44561]}, "properties": {"id": 18, "nama_situs": "Pantai Cemara Nyiuwudu", "kategori": "Pantai", "deskripsi_geologi": "Dinamika sedimen pasang surut yang terjebak vegetasi.", "aksesibilitas": "Mudah", "formasi": "Alluvium", "kondisi": "Bagus untuk wisata", "image_url": "https://images.unsplash.com/photo-1520116468816-95b69f847357?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.98540, -10.44081]}, "properties": {"id": 19, "nama_situs": "Pantai Langa Ae", "kategori": "Pantai", "deskripsi_geologi": "Cliff curam bukti pengangkatan tektonik pulau.", "aksesibilitas": "Sulit", "formasi": "Fm. Batuputih", "kondisi": "Elevasi tinggi", "image_url": "https://images.unsplash.com/photo-1508003554441-2a14e99f57eb?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.53278, -10.62303]}, "properties": {"id": 20, "nama_situs": "Wadu Dhere", "kategori": "Pantai", "deskripsi_geologi": "Sea Stack berbentuk kepala burung, pilar sisa erosi.", "aksesibilitas": "Sedang", "formasi": "Sedimen Karbonat", "kondisi": "Abrasi aktif", "image_url": "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.57643, -10.61545]}, "properties": {"id": 21, "nama_situs": "Lipatan Wata Dagi", "kategori": "Bukit", "deskripsi_geologi": "Bentuk lahan struktural dengan pola strike-slip.", "aksesibilitas": "Sulit", "formasi": "Fm. Sabu", "kondisi": "Lereng terjal", "image_url": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.83377, -10.48437]}, "properties": {"id": 22, "nama_situs": "Pantai Napae", "kategori": "Pantai", "deskripsi_geologi": "Pesisir utara dengan rataan terumbu dan lumpur.", "aksesibilitas": "Mudah", "formasi": "Endapan Holosen", "kondisi": "Pelabuhan Kuno", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.84500, -10.48000]}, "properties": {"id": 23, "nama_situs": "Kampung Adat Namata", "kategori": "Bentang Alam", "deskripsi_geologi": "Situs budaya di atas singkapan batuan dasar yang sakral.", "aksesibilitas": "Mudah", "formasi": "Batugamping Karst", "kondisi": "Religi & Budaya", "image_url": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.90000, -10.45000]}, "properties": {"id": 24, "nama_situs": "Bukit Ledepemulu", "kategori": "Bukit", "deskripsi_geologi": "Puncak pemandangan 360 derajat pulau Sabu.", "aksesibilitas": "Mudah", "formasi": "Vulkanik Tua", "kondisi": "Berangin kencang", "image_url": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.82000, -10.55000]}, "properties": {"id": 25, "nama_situs": "Embung Seba", "kategori": "Embung", "deskripsi_geologi": "Sistem irigasi memanfaatkan morfologi lembah.", "aksesibilitas": "Mudah", "formasi": "Alluvium", "kondisi": "Stabil", "image_url": "https://images.unsplash.com/photo-1543085601-5231c26b6f79?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.75000, -10.50000]}, "properties": {"id": 26, "nama_situs": "Goa Lie Jaka", "kategori": "Gua", "deskripsi_geologi": "Gua horisontal dengan lorong panjang.", "aksesibilitas": "Sulit", "formasi": "Fm. Batuputih", "kondisi": "Gelap total", "image_url": "https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.65000, -10.60000]}, "properties": {"id": 27, "nama_situs": "Tebing Raijua", "kategori": "Bentang Alam", "deskripsi_geologi": "Struktur sesar terekspos di tebing laut Raijua.", "aksesibilitas": "Sulit", "formasi": "Batuan Metamorf", "kondisi": "Sangat Terjal", "image_url": "https://images.unsplash.com/photo-1549887552-cb1071d3e5ca?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.62000, -10.63000]}, "properties": {"id": 28, "nama_situs": "Pantai Kolouju", "kategori": "Pantai", "deskripsi_geologi": "Pantai dengan material kerakal vulkanik.", "aksesibilitas": "Sedang", "formasi": "Fm. Lutu", "kondisi": "Gelombang tinggi", "image_url": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.95000, -10.52000]}, "properties": {"id": 29, "nama_situs": "Bukit Menia", "kategori": "Bukit", "deskripsi_geologi": "Dataran tinggi dengan sisa-sisa fosil laut.", "aksesibilitas": "Mudah", "formasi": "Fm. Sabu", "kondisi": "Banyak singkapan", "image_url": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.86000, -10.46000]}, "properties": {"id": 30, "nama_situs": "Pantai Seba", "kategori": "Pantai", "deskripsi_geologi": "Gerbang masuk utama, sedimentasi pasir putih.", "aksesibilitas": "Mudah", "formasi": "Endapan Pantai", "kondisi": "Ramai, Aman", "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600"}},
-    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.78000, -10.58000]}, "properties": {"id": 31, "nama_situs": "Danau Lederaga", "kategori": "Danau", "deskripsi_geologi": "Danau musiman di tengah perbukitan kapur.", "aksesibilitas": "Sedang", "formasi": "Karbonat", "kondisi": "Kering saat kemarau", "image_url": "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600"}}
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.99320, -10.49738]}, "properties": {"id": 1, "nama_situs": "Pantai Raemea", "kategori": "Pantai", "deskripsi_geologi": "Morfologi pantai sempit yang berbatasan dengan tebing. Terdapat gugusan terumbu karang.", "aksesibilitas": "Sedang", "formasi": "Batugamping terumbu Kuarter (Qa)", "kondisi": "Potensi longsor tebing"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.73847, -10.59033]}, "properties": {"id": 2, "nama_situs": "Bukit Lobohede", "kategori": "Bukit", "deskripsi_geologi": "Perbukitan struktural terdenudasi dengan singkapan Formasi Batuputih.", "aksesibilitas": "Sedang", "formasi": "Formasi Batuputih", "kondisi": "Rawan longsor lereng terjal"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.69236, -10.58281]}, "properties": {"id": 3, "nama_situs": "Pantai Bodo", "kategori": "Pantai", "deskripsi_geologi": "Endapan alluvium serta singkapan batugamping koral.", "aksesibilitas": "Mudah", "formasi": "Endapan Pantai", "kondisi": "Aman, landai"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.68667, -10.57899]}, "properties": {"id": 4, "nama_situs": "Danau Porohohu", "kategori": "Danau", "deskripsi_geologi": "Cekungan geomorfologi air tawar di area pulau karang.", "aksesibilitas": "Mudah", "formasi": "Cekungan struktur", "kondisi": "Fluktuasi musiman"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.74071, -10.54776]}, "properties": {"id": 5, "nama_situs": "Goa Lie Madira", "kategori": "Gua", "deskripsi_geologi": "Gua eksokarst alami dari pelarutan batuan karbonat.", "aksesibilitas": "Sedang", "formasi": "Formasi Sabu", "kondisi": "Alami, licin"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.71658, -10.55768]}, "properties": {"id": 6, "nama_situs": "Pantai Molie", "kategori": "Pantai", "deskripsi_geologi": "Karakteristik ombak besar berhadapan dengan Samudera Hindia.", "aksesibilitas": "Sedang", "formasi": "Material Vulkanik", "kondisi": "Arus kuat"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.88415, -10.44511]}, "properties": {"id": 7, "nama_situs": "Mata Air Ei Madabubu", "kategori": "Danau", "deskripsi_geologi": "Mata air kontak batuan permeabel dan kedap air.", "aksesibilitas": "Mudah", "formasi": "Akuifer Formasi Lutu", "kondisi": "Debit stabil"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.8890, -10.5360]}, "properties": {"id": 8, "nama_situs": "Goa Lie Mabala", "kategori": "Gua", "deskripsi_geologi": "Gua karst dengan ornamen stalaktit dan stalagmit.", "aksesibilitas": "Sulit", "formasi": "Batugamping Karst", "kondisi": "Gelap, perlu guide"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85175, -10.54320]}, "properties": {"id": 9, "nama_situs": "Embung Guriola", "kategori": "Embung", "deskripsi_geologi": "Tangkapan air buatan pada cekungan batuan kedap air.", "aksesibilitas": "Mudah", "formasi": "Sedimen Kuarter", "kondisi": "Terawat"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85705, -10.58907]}, "properties": {"id": 10, "nama_situs": "Bukit Lipatan Eiowu", "kategori": "Bukit", "deskripsi_geologi": "Manifestasi proses deformasi struktur lipatan tektonik.", "aksesibilitas": "Sedang", "formasi": "Sedimen Tersier", "kondisi": "Terbuka"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.87256, -10.57558]}, "properties": {"id": 11, "nama_situs": "Bukit Lede Pemulu", "kategori": "Bukit", "deskripsi_geologi": "Puncak tertinggi dengan singkapan tuff dan breksi.", "aksesibilitas": "Mudah", "formasi": "Tuff Vulkanik", "kondisi": "Area BTS"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.87203, -10.61515]}, "properties": {"id": 12, "nama_situs": "Pantai Uba Hap'pu", "kategori": "Pantai", "deskripsi_geologi": "Jejak abrasi dan pengendapan pasir kuarsa halus.", "aksesibilitas": "Sedang", "formasi": "Endapan Kuarter", "kondisi": "Landai"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.85347, -10.61965]}, "properties": {"id": 13, "nama_situs": "Pantai Majalla", "kategori": "Pantai", "deskripsi_geologi": "Lingkungan pesisir berkarang dangkal dengan sedimentasi aktif.", "aksesibilitas": "Mudah", "formasi": "Batugamping Koral", "kondisi": "Aman"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.80351, -10.60941]}, "properties": {"id": 14, "nama_situs": "Kalabba Madja", "kategori": "Bentang Alam", "deskripsi_geologi": "Tebing sedimen warna-warni hasil pelapukan intensif.", "aksesibilitas": "Sedang", "formasi": "Paleogen Tersier", "kondisi": "Ikonik, Wisata Unggulan"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.81000, -10.61500]}, "properties": {"id": 15, "nama_situs": "Pantai Wadumeddi", "kategori": "Pantai", "deskripsi_geologi": "Singkapan batuan terekspos akibat hantaman ombak.", "aksesibilitas": "Sedang", "formasi": "Kalkarenit", "kondisi": "Berbatu tajam"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.91839, -10.57955]}, "properties": {"id": 16, "nama_situs": "Pantai Leokoa", "kategori": "Pantai", "deskripsi_geologi": "Tanjung kecil dengan fitur micro-karstification.", "aksesibilitas": "Sedang", "formasi": "Batugamping Terumbu", "kondisi": "Tersembunyi"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.96612, -10.44137]}, "properties": {"id": 17, "nama_situs": "Pantai Cemara Jiwuwu", "kategori": "Pantai", "deskripsi_geologi": "Sandbar yang distabilkan oleh vegetasi cemara laut.", "aksesibilitas": "Mudah", "formasi": "Endapan Eolian", "kondisi": "Landai"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [122.00109, -10.44561]}, "properties": {"id": 18, "nama_situs": "Pantai Cemara Nyiuwudu", "kategori": "Pantai", "deskripsi_geologi": "Dinamika sedimen pasang surut yang terjebak vegetasi.", "aksesibilitas": "Mudah", "formasi": "Alluvium", "kondisi": "Bagus untuk wisata"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.98540, -10.44081]}, "properties": {"id": 19, "nama_situs": "Pantai Langa Ae", "kategori": "Pantai", "deskripsi_geologi": "Cliff curam bukti pengangkatan tektonik pulau.", "aksesibilitas": "Sulit", "formasi": "Fm. Batuputih", "kondisi": "Elevasi tinggi"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.53278, -10.62303]}, "properties": {"id": 20, "nama_situs": "Wadu Dhere", "kategori": "Pantai", "deskripsi_geologi": "Sea Stack berbentuk kepala burung, pilar sisa erosi.", "aksesibilitas": "Sedang", "formasi": "Sedimen Karbonat", "kondisi": "Abrasi aktif"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.57643, -10.61545]}, "properties": {"id": 21, "nama_situs": "Lipatan Wata Dagi", "kategori": "Bukit", "deskripsi_geologi": "Bentuk lahan struktural dengan pola strike-slip.", "aksesibilitas": "Sulit", "formasi": "Fm. Sabu", "kondisi": "Lereng terjal"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.83377, -10.48437]}, "properties": {"id": 22, "nama_situs": "Pantai Napae", "kategori": "Pantai", "deskripsi_geologi": "Pesisir utara dengan rataan terumbu dan lumpur.", "aksesibilitas": "Mudah", "formasi": "Endapan Holosen", "kondisi": "Pelabuhan Kuno"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.84500, -10.48000]}, "properties": {"id": 23, "nama_situs": "Kampung Adat Namata", "kategori": "Bentang Alam", "deskripsi_geologi": "Situs budaya di atas singkapan batuan dasar yang sakral.", "aksesibilitas": "Mudah", "formasi": "Batugamping Karst", "kondisi": "Religi & Budaya"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.90000, -10.45000]}, "properties": {"id": 24, "nama_situs": "Bukit Ledepemulu", "kategori": "Bukit", "deskripsi_geologi": "Puncak pemandangan 360 derajat pulau Sabu.", "aksesibilitas": "Mudah", "formasi": "Vulkanik Tua", "kondisi": "Berangin kencang"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.82000, -10.55000]}, "properties": {"id": 25, "nama_situs": "Embung Seba", "kategori": "Embung", "deskripsi_geologi": "Sistem irigasi memanfaatkan morfologi lembah.", "aksesibilitas": "Mudah", "formasi": "Alluvium", "kondisi": "Stabil"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.75000, -10.50000]}, "properties": {"id": 26, "nama_situs": "Goa Lie Jaka", "kategori": "Gua", "deskripsi_geologi": "Gua horisontal dengan lorong panjang.", "aksesibilitas": "Sulit", "formasi": "Fm. Batuputih", "kondisi": "Gelap total"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.65000, -10.60000]}, "properties": {"id": 27, "nama_situs": "Tebing Raijua", "kategori": "Bentang Alam", "deskripsi_geologi": "Struktur sesar terekspos di tebing laut Raijua.", "aksesibilitas": "Sulit", "formasi": "Batuan Metamorf", "kondisi": "Sangat Terjal"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.62000, -10.63000]}, "properties": {"id": 28, "nama_situs": "Pantai Kolouju", "kategori": "Pantai", "deskripsi_geologi": "Pantai dengan material kerakal vulkanik.", "aksesibilitas": "Sedang", "formasi": "Fm. Lutu", "kondisi": "Gelombang tinggi"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.95000, -10.52000]}, "properties": {"id": 29, "nama_situs": "Bukit Menia", "kategori": "Bukit", "deskripsi_geologi": "Dataran tinggi dengan sisa-sisa fosil laut.", "aksesibilitas": "Mudah", "formasi": "Fm. Sabu", "kondisi": "Banyak singkapan"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.86000, -10.46000]}, "properties": {"id": 30, "nama_situs": "Pantai Seba", "kategori": "Pantai", "deskripsi_geologi": "Gerbang masuk utama, sedimentasi pasir putih.", "aksesibilitas": "Mudah", "formasi": "Endapan Pantai", "kondisi": "Ramai, Aman"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [121.78000, -10.58000]}, "properties": {"id": 31, "nama_situs": "Danau Lederaga", "kategori": "Danau", "deskripsi_geologi": "Danau musiman di tengah perbukitan kapur.", "aksesibilitas": "Sedang", "formasi": "Karbonat", "kondisi": "Kering saat kemarau"}}
   ]
 };
 
@@ -583,12 +690,38 @@ window.onload = () => {
   loadData();
   setupFilters();
   updateStats();
+  initCarousel();
 };
 
+// === FUNGSI CAROUSEL OTOMATIS ===
+function initCarousel() {
+  const carousel = document.getElementById('destinasi-carousel');
+  if (!carousel) return;
+  
+  setInterval(() => {
+    if (carousel.scrollLeft + carousel.offsetWidth >= carousel.scrollWidth - 10) {
+      carousel.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      const cardWidth = carousel.firstElementChild.offsetWidth;
+      carousel.scrollBy({ left: cardWidth + 24, behavior: 'smooth' });
+    }
+  }, 3000);
+}
+
 function initMap() {
-  map = L.map('map', { zoomControl: false, attributionControl: true }).setView([CONFIG.centerLat, CONFIG.centerLng], CONFIG.zoomInit);
-  layers.dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap contributors &copy; CARTO' }).addTo(map);
-  layers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' });
+  map = L.map('map', {
+    zoomControl: false,
+    attributionControl: true
+  }).setView([CONFIG.centerLat, CONFIG.centerLng], CONFIG.zoomInit);
+
+  layers.dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+  }).addTo(map);
+
+  layers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri'
+  });
+
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
   map.on('mousemove', (e) => {
@@ -600,29 +733,46 @@ function initMap() {
 function switchBasemap(type) {
   Object.values(layers).forEach(l => map.removeLayer(l));
   layers[type].addTo(map);
+  
   document.querySelectorAll('.basemap-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`btn-${type}`).classList.add('active');
 }
 
-const catColors = { "Pantai": "#00e5b0", "Bukit": "#a78bfa", "Gua": "#ffc832", "Danau": "#00b4ff", "Embung": "#0ea5e9", "Bentang Alam": "#ff6b35" };
+const catColors = {
+  "Pantai": "#00e5b0",
+  "Bukit": "#a78bfa",
+  "Gua": "#ffc832",
+  "Danau": "#00b4ff",
+  "Embung": "#0ea5e9",
+  "Bentang Alam": "#ff6b35"
+};
 
 function loadData() {
   if (geojsonLayer) map.removeLayer(geojsonLayer);
+
   geojsonLayer = L.geoJSON(GEO_DATA, {
-    filter: (feature) => activeFilter === 'ALL' || feature.properties.kategori === activeFilter,
+    filter: (feature) => {
+      return activeFilter === 'ALL' || feature.properties.kategori === activeFilter;
+    },
     pointToLayer: (feature, latlng) => {
       const color = catColors[feature.properties.kategori] || "#ffffff";
       const icon = L.divIcon({
         className: 'custom-div-icon',
         html: `<div class="geo-marker pulse" style="background:${color}"><div class="inner">📍</div></div>`,
-        iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32]
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
       });
       return L.marker(latlng, { icon });
     },
     onEachFeature: (feature, layer) => {
-      layer.on('click', () => { showPopup(feature, layer); highlightListItem(feature.properties.id); });
+      layer.on('click', () => {
+        showPopup(feature, layer);
+        highlightListItem(feature.properties.id);
+      });
     }
   }).addTo(map);
+
   renderList();
   updateStats();
 }
@@ -630,11 +780,14 @@ function loadData() {
 function renderList() {
   const listCont = document.getElementById('location-list');
   listCont.innerHTML = '';
+  
   const filtered = GEO_DATA.features.filter(f => activeFilter === 'ALL' || f.properties.kategori === activeFilter);
   document.getElementById('list-count').innerText = filtered.length;
+
   filtered.forEach(feat => {
     const p = feat.properties;
     const color = catColors[p.kategori] || "#888";
+    
     const div = document.createElement('div');
     div.className = `loc-item id-${p.id}`;
     div.onclick = () => {
@@ -643,6 +796,7 @@ function renderList() {
       if (layer) showPopup(feat, layer);
       highlightListItem(p.id);
     };
+    
     div.innerHTML = `
       <div class="loc-icon" style="background: rgba(${hexToRgb(color)}, 0.15); color: ${color}">📍</div>
       <div class="loc-info">
@@ -661,28 +815,38 @@ function renderList() {
 function showPopup(feature, layer) {
   const p = feature.properties;
   const color = catColors[p.kategori] || "#fff";
+  const lat = feature.geometry.coordinates[1];
+  const lng = feature.geometry.coordinates[0];
+  const mapsLink = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  
   const content = `
-    <div class="geo-popup">
-      <div class="popup-img-wrap">
-        <span class="popup-cat-badge" style="background:${color}; color:#000">${p.kategori}</span>
-        <img src="${p.image_url}" class="popup-img" onerror="this.src='https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400'">
-      </div>
-      <div class="popup-body">
+    <div class="geo-popup" style="width: 250px;">
+      <div class="popup-body" style="padding: 16px;">
+        <span style="background:${color}; color:#000; padding: 3px 10px; border-radius: 4px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; display: inline-block; margin-bottom: 8px;">${p.kategori}</span>
         <div class="popup-name">${p.nama_situs}</div>
-        <div class="popup-desc">${p.deskripsi_geologi}</div>
-        <div class="popup-footer">
-          <button class="detail-btn" onclick="openModal(${p.id})">🔍 Analisis Geologi</button>
+        <div class="popup-desc" style="display: block; -webkit-line-clamp: unset; margin-bottom: 8px;">${p.deskripsi_geologi}</div>
+        
+        <div style="font-size: 9px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
+            <strong>Akses:</strong> ${p.aksesibilitas}<br>
+            <strong>Formasi:</strong> ${p.formasi}
+        </div>
+
+        <div class="popup-footer" style="display: flex; gap: 8px; border-top: 1px solid var(--glass-border); padding-top: 12px;">
+          <a href="${mapsLink}" target="_blank" style="flex: 1; padding: 8px; border-radius: 6px; background: rgba(0,229,176,0.15); border: 1px solid var(--accent); color: var(--accent); font-family: var(--font-mono); font-size: 10px; cursor: pointer; transition: all 0.2s; text-align: center; text-decoration: none; font-weight: bold;">📍 Rute Maps</a>
         </div>
       </div>
     </div>
   `;
+  
   layer.bindPopup(content, { maxWidth: 300, offset: [0, -10] }).openPopup();
 }
 
 function setupFilters() {
   const cats = [...new Set(GEO_DATA.features.map(f => f.properties.kategori))];
   const container = document.getElementById('filter-tags');
+  
   document.getElementById('stat-cats').innerText = cats.length;
+
   cats.forEach(cat => {
     const span = document.createElement('span');
     span.className = 'filter-tag';
@@ -700,112 +864,157 @@ function applyFilter(el, cat) {
   loadData();
 }
 
-function openModal(id) {
-  const feat = GEO_DATA.features.find(f => f.properties.id === id);
-  if (!feat) return;
-  const p = feat.properties;
-  document.getElementById('modal-img').src = p.image_url;
-  document.getElementById('modal-cat').innerText = p.kategori;
-  document.getElementById('modal-name').innerText = p.nama_situs;
-  document.getElementById('modal-desc').innerText = p.deskripsi_geologi;
-  document.getElementById('modal-acc').innerText = p.aksesibilitas;
-  document.getElementById('modal-coords').innerText = `${feat.geometry.coordinates[1].toFixed(6)}, ${feat.geometry.coordinates[0].toFixed(6)}`;
-  document.getElementById('modal-geo').innerText = p.formasi;
-  document.getElementById('modal-kondisi').innerText = p.kondisi;
-  document.getElementById('detail-modal').classList.add('show');
-}
-
-function closeModal() { document.getElementById('detail-modal').classList.remove('show'); }
-function closeModalBg(e) { if (e.target.id === 'detail-modal') closeModal(); }
-function updateStats() { document.getElementById('stat-total').innerText = GEO_DATA.features.length; document.getElementById('stat-visible').innerText = geojsonLayer ? geojsonLayer.getLayers().length : 0; }
-function highlightListItem(id) { document.querySelectorAll('.loc-item').forEach(i => i.classList.remove('active')); const item = document.querySelector(`.loc-item.id-${id}`); if (item) { item.classList.add('active'); item.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }
-function findLayerByProp(key, val) { let found = null; geojsonLayer.eachLayer(layer => { if (layer.feature.properties[key] === val) found = layer; }); return found; }
-function hexToRgb(hex) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `${r}, ${g}, ${b}`; }
-
-// === FUNGSI FAKTA MENARIK EDUKASI (Untuk Halaman Informasi) ===
+// === FUNGSI FAKTA MENARIK EDUKASI (Diperluas dengan semua aset baru) ===
 const EDU_INFO_DATA = {
-    'wata_dagi': {
-        title: 'Bukit Lipatan Wata Dagi',
+    // Geo
+    'kalabba': {
+        title: 'Kalabba Madja',
         cat: 'Geodiversity',
-        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/bukit%20.jpg',
-        desc: '<b>Fakta Menarik:</b> Struktur lipatan Wata Dagi terbentuk akibat tekanan lempeng tektonik jutaan tahun lalu. Lapisan batuan yang melengkung sempurna ini bagaikan "buku sejarah" bumi yang terbuka, memperlihatkan jejak pergerakan benua yang dahsyat yang mengangkat dasar laut menjadi perbukitan.'
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Bagi%20%23SobatJalan%20yang%20suka%20berpetualang%20melihat….jpeg',
+        desc: '<b>Fakta Menarik:</b> Kalabba Madja menyerupai Painted Hills di Arizona dengan gradasi warna tebing merah, cokelat, putih, dan biru. Tempat ini dianggap sakral oleh penganut kepercayaan lokal.'
+    },
+    'pantai': {
+        title: 'Pantai Raemea',
+        cat: 'Geodiversity',
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/Pantai%20Rae%20Mea-Sabu%20(9).jpg',
+        desc: '<b>Fakta Menarik:</b> Pantai Raemea memiliki morfologi pesisir yang diapit oleh formasi tebing karang tinggi (escarpment). Pasir putihnya yang halus merupakan hasil dari pelapukan terumbu karang selama ribuan tahun.'
+    },
+    'goa': {
+        title: 'Goa Lie Madira',
+        cat: 'Geodiversity',
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/goa.png',
+        desc: '<b>Fakta Menarik:</b> Goa eksokarst alami ini terbentuk dari proses pelarutan batuan gamping (karst) oleh air bawah tanah secara terus menerus. Di dalamnya terdapat ornamen stalaktit dan stalagmit.'
+    },
+    'danau': {
+        title: 'Danau Porohohu',
+        cat: 'Geodiversity',
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/danaul.jpg',
+        desc: '<b>Fakta Menarik:</b> Danau Porohohu adalah fenomena geomorfologis unik karena merupakan danau air tawar di tengah pulau yang strukturnya didominasi batu karang laut yang terangkat.'
     },
     'embung': {
         title: 'Embung Guriola',
         cat: 'Geodiversity',
         img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/embung.jpg',
-        desc: '<b>Fakta Menarik:</b> Di tengah iklim semi-arid yang cukup ekstrem di Sabu Raijua, embung menjadi oasis buatan yang sangat vital. Secara geologis, embung ini secara cerdas dibangun di atas lapisan batuan dengan permeabilitas sangat rendah (kedap air) untuk meminimalisasi kebocoran dan menjaga ketersediaan air tawar sepanjang tahun.'
+        desc: '<b>Fakta Menarik:</b> Di tengah iklim semi-arid Sabu Raijua, embung menjadi oasis buatan vital. Secara geologis, embung ini cerdas dibangun di atas batuan kedap air untuk mencegah kebocoran.'
     },
+
+    // Bio
     'mangrove': {
         title: 'Ekosistem Mangrove Kepu',
         cat: 'Biodiversity',
         img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/kepu.jpg',
-        desc: '<b>Fakta Menarik:</b> Hutan mangrove Kepu bertindak sebagai perisai alami Pulau Sabu dari hantaman abrasi dan badai laut. Akar napasnya yang menjulang menjadi tempat pemijahan (nursery ground) bagi ribuan biota laut seperti kepiting dan udang, serta persinggahan penting bagi burung pelikan yang bermigrasi dari Australia.'
+        desc: '<b>Fakta Menarik:</b> Hutan mangrove Kepu bertindak sebagai perisai alami Pulau Sabu. Akar napasnya menjadi tempat pemijahan bagi biota laut dan persinggahan penting bagi burung migran.'
     },
     'tridacna': {
         title: 'Budidaya Kerang Tridacna',
         cat: 'Biodiversity',
         img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/kerang.JPEG',
-        desc: '<b>Fakta Menarik:</b> Kerang Kima raksasa (Tridacna) adalah "filter air" alami lautan. Satu ekor kima dewasa mampu menyaring ratusan liter air laut setiap harinya. Keberadaannya yang dilestarikan di perairan Sabu menandakan bahwa ekosistem terumbu karang di kawasan ini masih sangat alami, jernih, dan bebas dari polusi berat.'
+        desc: '<b>Fakta Menarik:</b> Kerang Kima raksasa (Tridacna) adalah "filter air" alami. Satu kima dewasa menyaring ratusan liter air laut setiap harinya, menjaga ekosistem Sabu tetap jernih dan bebas polusi.'
     },
+    'lontar': {
+        title: 'Pohon Lontar',
+        cat: 'Biodiversity',
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/lontar.jpg',
+        desc: '<b>Fakta Menarik:</b> Pohon Lontar adalah "Pohon Kehidupan" masyarakat Sabu. Nira yang dihasilkan diolah menjadi gula Sabu yang mampu menopang ketahanan pangan saat musim kemarau ekstrem tiba.'
+    },
+    'rumputlaut': {
+        title: 'Budidaya Rumput Laut',
+        cat: 'Biodiversity',
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/rumput%20laut.jpg',
+        desc: '<b>Fakta Menarik:</b> Kualitas perairan Sabu Raijua yang masih murni dan jernih sangat ideal untuk pertumbuhan makroalga laut. Ini menjadi salah satu penggerak ekonomi unggulan bagi para masyarakat pesisir.'
+    },
+    'sorgum': {
+        title: 'Perkebunan Sorgum',
+        cat: 'Biodiversity',
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/sorgum.jpg',
+        desc: '<b>Fakta Menarik:</b> Sorgum merupakan sereal lokal yang sangat tangguh di lahan kering. Tahan terhadap panas ekstrem, tanaman ini membuktikan kemampuan adaptasi hayati di alam Sabu yang semi-arid.'
+    },
+
+    // Cultural
     'tenun': {
         title: 'Kesenian Tenun Ikat',
         cat: 'Cultural Diversity',
         img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/tenun.jpg',
-        desc: '<b>Fakta Menarik:</b> Menenun sehelai kain Ikat Sabu adalah proses menanam doa yang memakan waktu berbulan-bulan. Pewarnaannya menggunakan bahan alam seperti daun tarum (untuk warna nila) dan akar mengkudu (warna merah). Motif geometrisnya tidak dibuat sembarangan, melainkan sebagai penanda garis keturunan (Hubi) sang pemakai.'
+        desc: '<b>Fakta Menarik:</b> Menenun sehelai kain Ikat Sabu adalah proses spiritual. Pewarnaannya menggunakan alam, dan motif geometrisnya menjadi penanda identitas garis keturunan (Hubi) kelompok pemakainya.'
     },
     'salam': {
         title: 'Tradisi Salam Sabu',
         cat: 'Cultural Diversity',
         img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/salam%20sabu.jpeg',
-        desc: '<b>Fakta Menarik:</b> Tradisi cium hidung (Henge\'do) merupakan sapaan khas dan sakral bagi masyarakat Sabu. Hidung menyimbolkan nafas kehidupan, sehingga tradisi saling menyentuhkan hidung ini bermakna saling berbagi kehidupan, menghapus amarah atau dendam masa lalu, dan menyatukan jiwa kekeluargaan sebagai sesama manusia.'
+        desc: '<b>Fakta Menarik:</b> Henge\'do (cium hidung) adalah sapaan sakral. Karena hidung menyimbolkan nafas kehidupan, saling menyentuhkannya bermakna berbagi kehidupan dan merekatkan persaudaraan sejati.'
+    },
+    'pacuankuda': {
+        title: 'Pacuan Kuda Tradisional',
+        cat: 'Cultural Diversity',
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/pacuankuda.jpg',
+        desc: '<b>Fakta Menarik:</b> Mengandalkan kuda jenis ras lokal Sabu yang kecil namun berotot, pacuan kuda ini tidak menggunakan pelana. Ini adalah perayaan sukacita tahunan rakyat yang biasanya digelar pasca panen.'
+    },
+    'sabungayam': {
+        title: 'Sabung Ayam Adat',
+        cat: 'Cultural Diversity',
+        img: 'https://raw.githubusercontent.com/androginting336-alt/web-soal/main/sabung%20ayam.jpeg',
+        desc: '<b>Fakta Menarik:</b> Dikenal dengan "Pehere Manu", sabung ayam adat di Sabu bukan sekadar aduan. Tetesan darahnya ke bumi dianggap sebagai ritual penyucian dan permohonan kesuburan kepada para dewa leluhur.'
     }
 };
 
-function toggleCategory(contentId, iconId) {
-    const content = document.getElementById(contentId);
-    const icon = document.getElementById(iconId);
-    if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        content.classList.add('animate-slideDown');
-        icon.style.transform = 'rotate(180deg)';
-        icon.classList.add('bg-white', 'text-[#1e3a5f]');
-    } else {
-        content.classList.add('hidden');
-        content.classList.remove('animate-slideDown');
-        icon.style.transform = 'rotate(0deg)';
-        icon.classList.remove('bg-white', 'text-[#1e3a5f]');
-    }
-}
-
 function openInfoModal(id) {
-    const data = EDU_INFO_DATA[id];
-    if (!data) return;
+  const data = EDU_INFO_DATA[id];
+  if (!data) return;
 
-    document.getElementById('info-modal-title').innerText = data.title;
-    document.getElementById('info-modal-desc').innerHTML = data.desc;
-    document.getElementById('info-modal-img').src = data.img;
-    
-    // Terapkan label kategori
-    document.getElementById('info-modal-cat').innerText = data.cat;
+  document.getElementById('info-modal-title').innerText = data.title;
+  document.getElementById('info-modal-desc').innerHTML = data.desc;
+  document.getElementById('info-modal-img').src = data.img;
+  document.getElementById('info-modal-cat').innerText = data.cat;
 
-    const modal = document.getElementById('info-modal');
-    modal.classList.remove('hidden');
-    // timeout sangat singkat untuk trigger CSS transform
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        document.getElementById('info-modal-card').classList.remove('scale-95');
-    }, 10);
+  const modal = document.getElementById('info-modal');
+  modal.style.display = 'flex';
+  
+  setTimeout(() => {
+      modal.classList.remove('opacity-0');
+      document.getElementById('info-modal-card').classList.remove('scale-95');
+  }, 10);
 }
 
 function closeInfoModal() {
-    const modal = document.getElementById('info-modal');
-    modal.classList.add('opacity-0');
-    document.getElementById('info-modal-card').classList.add('scale-95');
-    setTimeout(() => { modal.classList.add('hidden'); }, 300);
+  const modal = document.getElementById('info-modal');
+  modal.classList.add('opacity-0');
+  document.getElementById('info-modal-card').classList.add('scale-95');
+  setTimeout(() => { modal.style.display = 'none'; }, 300);
 }
 
-function closeInfoModalBg(e) { if (e.target.id === 'info-modal') closeInfoModal(); }
+function closeInfoModalBg(e) {
+  if (e.target.id === 'info-modal') closeInfoModal();
+}
+
+function updateStats() {
+  document.getElementById('stat-total').innerText = GEO_DATA.features.length;
+  document.getElementById('stat-visible').innerText = geojsonLayer ? geojsonLayer.getLayers().length : 0;
+}
+
+function highlightListItem(id) {
+  document.querySelectorAll('.loc-item').forEach(i => i.classList.remove('active'));
+  const item = document.querySelector(`.loc-item.id-${id}`);
+  if (item) {
+    item.classList.add('active');
+    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function findLayerByProp(key, val) {
+  let found = null;
+  geojsonLayer.eachLayer(layer => {
+    if (layer.feature.properties[key] === val) found = layer;
+  });
+  return found;
+}
+
+function hexToRgb(hex) {
+  hex = hex.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `${r}, ${g}, ${b}`;
+}
 </script>
 
 </body>
